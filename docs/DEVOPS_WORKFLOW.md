@@ -43,8 +43,8 @@
 
 ## 5. Kanban/Scrum Plan
 - **To Do:** Tasks 7-15 (Jenkins, Selenium, Docker, Ansible)
-- **In Progress:** Task 4, 5, 6 (Git init, Branching, MVP Completion)
-- **Done:** Tasks 1, 2, 3 (MVP Development, Scope, Architecture)
+- **In Progress:** Task 4, 5 (Git init, Branching)
+- **Done:** Tasks 1, 2, 3, 6 (MVP Development, Scope, Architecture, MVP Completion)
 
 ## 6. Definition of Done (DoD)
 - Code compiles without errors using `mvn clean package`.

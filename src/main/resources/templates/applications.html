@@ -1,5 +1,15 @@
 <div th:replace="~{header}"></div>
 <h2>Applications <a href="/applications/new" class="btn btn-primary float-end">New Application</a></h2>
+<form action="/applications" method="get" class="d-flex mb-3 mt-3 w-50">
+    <select name="status" class="form-select me-2" onchange="this.form.submit()">
+        <option value="" th:selected="${currentStatus == 'ALL'}">All Statuses</option>
+        <option value="APPLIED" th:selected="${currentStatus == 'APPLIED'}">Applied</option>
+        <option value="SHORTLISTED" th:selected="${currentStatus == 'SHORTLISTED'}">Shortlisted</option>
+        <option value="INTERVIEW" th:selected="${currentStatus == 'INTERVIEW'}">Interview</option>
+        <option value="SELECTED" th:selected="${currentStatus == 'SELECTED'}">Selected</option>
+        <option value="REJECTED" th:selected="${currentStatus == 'REJECTED'}">Rejected</option>
+    </select>
+</form>
 <table class="table table-striped mt-3">
     <thead>
         <tr>

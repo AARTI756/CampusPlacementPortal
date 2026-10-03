@@ -105,8 +105,14 @@ public class WebController {
     }
 
     @GetMapping("/applications")
-    public String applications(Model model) {
-        model.addAttribute("applications", applicationRepository.findAll());
+    public String applications(@RequestParam(required = false) ApplicationStatus status, Model model) {
+        if (status != null) {
+            model.addAttribute("applications", applicationRepository.findByStatus(status));
+            model.addAttribute("currentStatus", status.name());
+        } else {
+            model.addAttribute("applications", applicationRepository.findAll());
+            model.addAttribute("currentStatus", "ALL");
+        }
         return "applications";
     }
 

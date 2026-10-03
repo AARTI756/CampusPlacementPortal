@@ -48,6 +48,7 @@ public class DashboardService {
 
         stats.put("unplacedStudentsCount", unplacedStudents.size());
         stats.put("upcomingDrivesCount", upcomingDrives.size());
+        stats.put("pendingInterviewsCount", applicationRepository.countByStatus(ApplicationStatus.INTERVIEW));
 
         return stats;
     }

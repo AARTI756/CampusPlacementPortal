@@ -42,4 +42,7 @@
 <div class="alert alert-info">
     <strong>Upcoming Drives:</strong> <span th:text="${stats.upcomingDrivesCount}">0</span> drives are upcoming.
 </div>
+<div class="alert alert-primary">
+    <strong>Pending Interviews:</strong> <span th:text="${stats.pendingInterviewsCount}">0</span> students are currently scheduled for interviews.
+</div>
 <div th:replace="~{footer}"></div>

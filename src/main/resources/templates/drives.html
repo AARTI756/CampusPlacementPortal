@@ -1,0 +1,25 @@
+<div th:replace="~{header}"></div>
+<h2>Placement Drives <a href="/drives/new" class="btn btn-primary float-end">Create Drive</a></h2>
+<table class="table table-striped mt-3">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Company</th>
+            <th>Job Role</th>
+            <th>Date</th>
+            <th>Min CGPA</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="drive : ${drives}">
+            <td th:text="${drive.id}"></td>
+            <td th:text="${drive.company.name}"></td>
+            <td th:text="${drive.jobRole}"></td>
+            <td th:text="${drive.date}"></td>
+            <td th:text="${drive.minimumCgpa}"></td>
+            <td th:text="${drive.status}"></td>
+        </tr>
+    </tbody>
+</table>
+<div th:replace="~{footer}"></div>

@@ -1,0 +1,45 @@
+<div th:replace="~{header}"></div>
+<h2>Dashboard</h2>
+<div class="row mt-4">
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <h5 class="card-title">Total Students</h5>
+                <h2 class="card-text" th:text="${stats.totalStudents}">0</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <h5 class="card-title">Total Companies</h5>
+                <h2 class="card-text" th:text="${stats.totalCompanies}">0</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-info">
+            <div class="card-body">
+                <h5 class="card-title">Total Drives</h5>
+                <h2 class="card-text" th:text="${stats.totalDrives}">0</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-secondary">
+            <div class="card-body">
+                <h5 class="card-title">Students Placed</h5>
+                <h2 class="card-text" th:text="${stats.studentsPlaced}">0</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h4 class="mt-4">Alerts & Exceptions</h4>
+<div class="alert alert-warning">
+    <strong>Unplaced Students:</strong> <span th:text="${stats.unplacedStudentsCount}">0</span> students are yet to be placed.
+</div>
+<div class="alert alert-info">
+    <strong>Upcoming Drives:</strong> <span th:text="${stats.upcomingDrivesCount}">0</span> drives are upcoming.
+</div>
+<div th:replace="~{footer}"></div>

@@ -1,0 +1,29 @@
+<div th:replace="~{header}"></div>
+<h2>New Application</h2>
+<form th:action="@{/applications}" th:object="${application}" method="post" class="mt-3 w-50">
+    <div class="mb-3">
+        <label>Student</label>
+        <select class="form-control" th:field="*{student}" required>
+            <option th:each="std : ${students}" th:value="${std.id}" th:text="${std.name} + ' (' + ${std.cgpa} + ')'"></option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label>Placement Drive</label>
+        <select class="form-control" th:field="*{placementDrive}" required>
+            <option th:each="drv : ${drives}" th:value="${drv.id}" th:text="${drv.company.name} + ' - ' + ${drv.jobRole} + ' (Min CGPA: ' + ${drv.minimumCgpa} + ')'"></option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label>Status</label>
+        <select class="form-control" th:field="*{status}">
+            <option value="APPLIED">APPLIED</option>
+            <option value="SHORTLISTED">SHORTLISTED</option>
+            <option value="INTERVIEW">INTERVIEW</option>
+            <option value="SELECTED">SELECTED</option>
+            <option value="REJECTED">REJECTED</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-success">Save</button>
+    <a href="/applications" class="btn btn-secondary">Cancel</a>
+</form>
+<div th:replace="~{footer}"></div>

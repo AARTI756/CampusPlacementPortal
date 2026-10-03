@@ -1,0 +1,35 @@
+<div th:replace="~{header}"></div>
+<h2>Applications <a href="/applications/new" class="btn btn-primary float-end">New Application</a></h2>
+<table class="table table-striped mt-3">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Student</th>
+            <th>Company</th>
+            <th>Drive Role</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="app : ${applications}">
+            <td th:text="${app.id}"></td>
+            <td th:text="${app.student.name}"></td>
+            <td th:text="${app.placementDrive.company.name}"></td>
+            <td th:text="${app.placementDrive.jobRole}"></td>
+            <td th:text="${app.status}"></td>
+            <td>
+                <form th:action="@{/applications/{id}/status(id=${app.id})}" method="post" class="d-inline">
+                    <select name="status" onchange="this.form.submit()" class="form-select form-select-sm d-inline w-auto">
+                        <option th:selected="${app.status.name() == 'APPLIED'}" value="APPLIED">APPLIED</option>
+                        <option th:selected="${app.status.name() == 'SHORTLISTED'}" value="SHORTLISTED">SHORTLISTED</option>
+                        <option th:selected="${app.status.name() == 'INTERVIEW'}" value="INTERVIEW">INTERVIEW</option>
+                        <option th:selected="${app.status.name() == 'SELECTED'}" value="SELECTED">SELECTED</option>
+                        <option th:selected="${app.status.name() == 'REJECTED'}" value="REJECTED">REJECTED</option>
+                    </select>
+                </form>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<div th:replace="~{footer}"></div>

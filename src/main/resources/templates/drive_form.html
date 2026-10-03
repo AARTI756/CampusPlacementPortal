@@ -1,0 +1,33 @@
+<div th:replace="~{header}"></div>
+<h2>Create Placement Drive</h2>
+<form th:action="@{/drives}" th:object="${drive}" method="post" class="mt-3 w-50">
+    <div class="mb-3">
+        <label>Company</label>
+        <select class="form-control" th:field="*{company}" required>
+            <option th:each="comp : ${companies}" th:value="${comp.id}" th:text="${comp.name}"></option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label>Job Role</label>
+        <input type="text" class="form-control" th:field="*{jobRole}" required>
+    </div>
+    <div class="mb-3">
+        <label>Date</label>
+        <input type="date" class="form-control" th:field="*{date}" required>
+    </div>
+    <div class="mb-3">
+        <label>Minimum CGPA</label>
+        <input type="number" step="0.01" class="form-control" th:field="*{minimumCgpa}" required>
+    </div>
+    <div class="mb-3">
+        <label>Status</label>
+        <select class="form-control" th:field="*{status}">
+            <option value="UPCOMING">UPCOMING</option>
+            <option value="ONGOING">ONGOING</option>
+            <option value="COMPLETED">COMPLETED</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-success">Save</button>
+    <a href="/drives" class="btn btn-secondary">Cancel</a>
+</form>
+<div th:replace="~{footer}"></div>

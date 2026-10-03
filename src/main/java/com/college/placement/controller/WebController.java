@@ -42,7 +42,7 @@ public class WebController {
     @GetMapping("/students")
     public String students(Model model, @RequestParam(required = false) String keyword) {
         if (keyword != null && !keyword.isEmpty()) {
-            model.addAttribute("students", studentRepository.findByNameContainingIgnoreCaseOrDepartmentContainingIgnoreCase(keyword, keyword));
+            model.addAttribute("students", studentRepository.searchStudents(keyword));
             model.addAttribute("keyword", keyword);
         } else {
             model.addAttribute("students", studentRepository.findAll());

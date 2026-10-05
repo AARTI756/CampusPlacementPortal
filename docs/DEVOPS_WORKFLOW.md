@@ -42,7 +42,7 @@
 15. Final End-to-End Release, Documentation and Viva
 
 ## 5. Kanban/Scrum Plan
-- **To Do:** Tasks 9-15 (Selenium, Docker, Ansible, Provisioning, Final Release)
+- **To Do:** Tasks 10-15 (Continuous Testing, Docker, Ansible, Provisioning, Final Release)
 - **In Progress:** None
 - **Done:** Tasks 1, 2, 3, 4, 5, 6, 7, 8 (MVP Development, Scope, Architecture, Git init, Branching, MVP Completion, Jenkins CI, Pipeline as Code)
 
@@ -121,3 +121,15 @@
 - **Build #2 Result:** SUCCESS
 - **Duration:** ~81 seconds
 - **Console confirmation:** `HTTP Status: 200` / `Deployment verified successfully!`
+
+
+## Task 9 — Selenium Test Design and Local Execution
+- **Frameworks Used:** Selenium WebDriver 4.x, JUnit 5, Chrome headless (for stability/background execution).
+- **Test Scenarios Implemented:**
+  1. `DashboardSeleniumTest.testDashboardLoads` - Dashboard and Navigation validation.
+  2. `StudentSeleniumTest.testCreateStudent` - E2E Form Submission for Student Creation.
+  3. `StudentSeleniumTest.testStudentSearch` - Search and Result Table validation.
+  4. `ApplicationSeleniumTest.testApplicationStatusWorkflow` - Filtering table values by Select Option.
+  5. `StudentSeleniumTest.testDeleteStudent` - Deletion and javascript confirmation alert handling.
+- **Execution Strategy:** Tests rely on `baseUrl` property (defaulting to `http://localhost:8080`) to interact with the active Spring Boot environment without wiping data globally. Test isolation achieved using unique UUIDs for mock data. Wait states are handled securely via `WebDriverWait` explicit conditions.
+- **Result:** Successfully built and executed via `mvn test -Dtest="*SeleniumTest"`, resulting in a passing test suite on the `feature/selenium-tests` branch.

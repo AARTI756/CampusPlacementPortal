@@ -6,10 +6,9 @@ pipeline {
     }
 
     environment {
-        DEPLOY_DIR   = 'C:\\CampusPlacementPortal\\deploy'
-        JAR_NAME     = 'placement-portal-0.0.1-SNAPSHOT.jar'
-        DEPLOY_PORT  = '8082'
-        DB_URL       = 'jdbc:postgresql://127.0.0.1:5433/placement_db'
+        DEPLOY_DIR  = 'C:\\CampusPlacementPortal\\deploy'
+        JAR_NAME    = 'placement-portal-0.0.1-SNAPSHOT.jar'
+        DEPLOY_PORT = '8082'
     }
 
     stages {
@@ -48,53 +47,24 @@ pipeline {
                 // Ensure deployment directory exists
                 bat 'if not exist "%DEPLOY_DIR%" mkdir "%DEPLOY_DIR%"'
 
-                // Stop any process currently listening on port 8082
-                bat '''@echo off
-for /f "tokens=5" %%a in ('netstat -ano 2^>nul ^| findstr ":8082 " ^| findstr "LISTENING"') do (
-    echo Stopping existing process PID %%a on port 8082...
-    taskkill /PID %%a /F 2>nul
-)
-echo Port 8082 cleared.
-timeout /t 3 /nobreak >nul
-'''
+                // Stop any process on port 8082 using PowerShell
+                bat 'powershell -NonInteractive -Command "$conn = Get-NetTCPConnection -LocalPort 8082 -ErrorAction SilentlyContinue; if ($conn) { $conn.OwningProcess | Sort-Object -Unique | ForEach-Object { Write-Host (\'Stopping PID: \' + $_); Stop-Process -Id $_ -Force -ErrorAction SilentlyContinue } }; Start-Sleep -Seconds 3; Write-Host \'Port 8082 cleared.\'"'
 
-                // Copy the packaged JAR to the deploy directory
+                // Copy JAR to deploy directory
                 bat 'copy /Y "target\\%JAR_NAME%" "%DEPLOY_DIR%\\%JAR_NAME%"'
-                echo 'JAR copied to deploy directory.'
 
-                // Start application as detached background process
-                bat '''powershell -NonInteractive -Command ^
-"Start-Process java ^
- -ArgumentList @('-Duser.timezone=Asia/Kolkata', '-jar', '%DEPLOY_DIR%\\%JAR_NAME%', '--server.port=%DEPLOY_PORT%', '--spring.datasource.url=%DB_URL%', '--spring.datasource.username=placement_user', '--spring.datasource.password=placement_password') ^
- -NoNewWindow ^
- -RedirectStandardOutput '%DEPLOY_DIR%\\app.log' ^
- -RedirectStandardError '%DEPLOY_DIR%\\app-error.log'"
-'''
-                echo 'Application process launched. Waiting for startup...'
+                // Launch Spring Boot app as detached background process
+                bat 'powershell -NonInteractive -Command "Start-Process java -ArgumentList @(\'-Duser.timezone=Asia/Kolkata\',\'-jar\',\'%DEPLOY_DIR%\\%JAR_NAME%\',\'--server.port=%DEPLOY_PORT%\',\'--spring.datasource.url=jdbc:postgresql://127.0.0.1:5433/placement_db\',\'--spring.datasource.username=placement_user\',\'--spring.datasource.password=placement_password\') -NoNewWindow -RedirectStandardOutput \'%DEPLOY_DIR%\\app.log\' -RedirectStandardError \'%DEPLOY_DIR%\\app-error.log\'; Write-Host \'Application process launched.\'"'
 
-                // Give the Spring Boot app time to start
-                bat 'timeout /t 30 /nobreak >nul'
+                // Wait for Spring Boot to start up (30 seconds)
+                bat 'powershell -NonInteractive -Command "Write-Host \'Waiting 30s for application startup...\'; Start-Sleep -Seconds 30; Write-Host \'Wait complete.\'"'
             }
         }
 
         stage('Verify') {
             steps {
                 echo '=== STAGE: Verify ==='
-                bat '''powershell -NonInteractive -Command ^
-"$maxAttempts = 8; $attempt = 0; $success = $false; ^
-while ($attempt -lt $maxAttempts -and -not $success) { ^
-    $attempt++; ^
-    try { ^
-        $r = Invoke-WebRequest -Uri 'http://localhost:8082/' -UseBasicParsing -TimeoutSec 10; ^
-        Write-Host ('Deployment verified! HTTP Status: ' + $r.StatusCode); ^
-        $success = $true ^
-    } catch { ^
-        Write-Host ('Attempt ' + $attempt + ' failed - retrying in 5s...'); ^
-        Start-Sleep -Seconds 5 ^
-    } ^
-}; ^
-if (-not $success) { Write-Host 'VERIFICATION FAILED'; exit 1 }"
-'''
+                bat 'powershell -NonInteractive -Command "$maxAttempts=8; $attempt=0; $success=$false; while($attempt -lt $maxAttempts -and -not $success){$attempt++; try{$r=Invoke-WebRequest -Uri \'http://localhost:8082/\' -UseBasicParsing -TimeoutSec 10; Write-Host (\'HTTP Status: \'+$r.StatusCode); $success=$true}catch{Write-Host (\'Attempt \'+$attempt+\' failed, retrying...\'); Start-Sleep -Seconds 5}}; if(-not $success){Write-Host \'VERIFICATION FAILED\'; exit 1}; Write-Host \'Deployment verified successfully!\'"'
             }
         }
     }

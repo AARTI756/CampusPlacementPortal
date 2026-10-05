@@ -42,9 +42,9 @@
 15. Final End-to-End Release, Documentation and Viva
 
 ## 5. Kanban/Scrum Plan
-- **To Do:** Tasks 11-15 (Docker, Ansible, Provisioning, Final Release)
+- **To Do:** Tasks 12-15 (Jenkins-Docker CD, Ansible, Provisioning, Final Release)
 - **In Progress:** None
-- **Done:** Tasks 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 (MVP Development, Scope, Architecture, Git init, Branching, MVP Completion, Jenkins CI, Pipeline as Code, Selenium Design, Continuous Testing)
+- **Done:** Tasks 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 (MVP Development, Scope, Architecture, Git init, Branching, MVP Completion, Jenkins CI, Pipeline as Code, Selenium Design, Continuous Testing, Docker Lifecycle)
 
 ## 6. Definition of Done (DoD)
 - Code compiles without errors using `mvn clean package`.
@@ -160,3 +160,47 @@ Configure Jenkins so that the existing Selenium/UI tests and required Maven test
 - **Reporting:** Test results (Pass/Fail metrics, durations) are visible inside the Jenkins build interface.
 - **Resilience:** The pipeline successfully starts the application, tests the application via headless Chrome, and correctly cleans up the Spring Boot process upon both success and failure. A failed test properly fails the Jenkins build.
 
+
+
+
+## 11. Task 11 - Docker Image and Container Lifecycle
+
+### Objective
+Containerize the Campus Placement Tracking Portal and demonstrate the complete Docker image/container lifecycle using a production-appropriate multi-stage Dockerfile and Docker Compose setup.
+
+### Docker Architecture
+- **Application Container:** `campus-placement-portal:latest` (built via multi-stage Dockerfile)
+- **Database Container:** `postgres:15` (existing image)
+- **Network:** Shared bridge network `placement_net` for internal resolution.
+- **Port Mapping:** Host port `8083` maps to Container port `8080`.
+- **Database Connection:** Application connects internally via `jdbc:postgresql://db:5432/placement_db`. Local port `5433` is preserved for direct host access.
+- **Volumes:** PostgreSQL uses `postgres_data` volume to persist placement data across application/database restarts.
+
+### Image & Container Details
+- **Dockerfile:** Multi-stage build (Stage 1: Maven build, Stage 2: JRE 17 Alpine runtime)
+- **Image Names:** `campus-placement-portal:v1`, `campus-placement-portal:latest`
+- **Container Name:** `campusplacementportal-app-1`
+- **Verification URL:** `http://localhost:8083/`
+
+### Lifecycle Commands Demonstrated
+- **Build Image:** `docker build -t campus-placement-portal:v1 -t campus-placement-portal:latest .`
+- **List Images:** `docker images campus-placement-portal`
+- **Inspect Image:** `docker image inspect campus-placement-portal:v1`
+- **Start Compose Stack:** `docker compose up -d`
+- **List Containers:** `docker ps` and `docker ps -a`
+- **Inspect Container:** `docker inspect campusplacementportal-app-1`
+- **Logs:** `docker logs campusplacementportal-app-1`
+- **Stop:** `docker stop campusplacementportal-app-1`
+- **Start:** `docker start campusplacementportal-app-1`
+- **Restart:** `docker restart campusplacementportal-app-1`
+- **Remove Container:** `docker rm -f campusplacementportal-app-1`
+
+### Cleanup Procedure
+To gracefully stop the environment without destroying the database:
+`docker compose stop`
+
+To completely remove the containers and network (but preserve the volume data):
+`docker compose down`
+
+To remove everything including the database volume (destructive):
+`docker compose down -v`

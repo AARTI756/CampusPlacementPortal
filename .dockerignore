@@ -1,0 +1,13 @@
+.git
+.gitignore
+target/
+.idea/
+.vscode/
+*.log
+jenkins-cli.jar
+job-config.xml
+docs/
+README.md
+Jenkinsfile
+Jenkinsfile-Continuous-Testing
+docker-compose.yml

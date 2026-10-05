@@ -42,7 +42,7 @@ pipeline {
                 bat 'powershell -NonInteractive -Command "$conn = Get-NetTCPConnection -LocalPort 8080 -ErrorAction SilentlyContinue; if ($conn) { $conn.OwningProcess | Sort-Object -Unique | ForEach-Object { Stop-Process -Id $_ -Force -ErrorAction SilentlyContinue } }; Start-Sleep -Seconds 3"'
                 
                 // Start application
-                bat 'powershell -NonInteractive -Command "Start-Process java -ArgumentList @(\'-jar\',\'target\\%JAR_NAME%\',\'--server.port=%TEST_PORT%\') -NoNewWindow -RedirectStandardOutput \'app-selenium.log\' -RedirectStandardError \'app-selenium-error.log\'"'
+                bat 'powershell -NonInteractive -Command "Start-Process java -ArgumentList @(\'-Duser.timezone=UTC\', \'-jar\',\'target\\%JAR_NAME%\',\'--server.port=%TEST_PORT%\') -NoNewWindow -RedirectStandardOutput \'app-selenium.log\' -RedirectStandardError \'app-selenium-error.log\'"'
                 
                 // Wait for the app to come up
                 bat '''powershell -NonInteractive -Command "$tries=0; do { Start-Sleep -Seconds 5; $tries++; try { $r = Invoke-WebRequest -Uri http://localhost:%TEST_PORT%/ -UseBasicParsing -ErrorAction Stop; Write-Host 'UP'; break } catch { Write-Host 'Wait...' } } while ($tries -lt 24); if ($tries -ge 24) { Write-Host 'App failed to start'; exit 1 }"'''

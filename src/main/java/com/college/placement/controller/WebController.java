@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.dao.DataIntegrityViolationException;
 
 @Controller
 public class WebController {
@@ -67,16 +69,30 @@ public class WebController {
     }
 
     @PostMapping("/students/delete/{id}")
-    public String deleteStudent(@PathVariable Long id) {
-        studentRepository.deleteById(id);
-        checkAndResetSequences();
+    public String deleteStudent(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            studentRepository.deleteById(id);
+            checkAndResetSequences();
+            redirectAttributes.addFlashAttribute("message", "Student deleted successfully.");
+        } catch (DataIntegrityViolationException e) {
+            redirectAttributes.addFlashAttribute("error", "Student could not be deleted because related applications exist.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "An error occurred while deleting the student.");
+        }
         return "redirect:/students";
     }
 
     @PostMapping("/students/delete/all")
-    public String deleteAllStudents() {
-        studentRepository.deleteAll();
-        checkAndResetSequences();
+    public String deleteAllStudents(RedirectAttributes redirectAttributes) {
+        try {
+            studentRepository.deleteAll();
+            checkAndResetSequences();
+            redirectAttributes.addFlashAttribute("message", "All students deleted successfully.");
+        } catch (DataIntegrityViolationException e) {
+            redirectAttributes.addFlashAttribute("error", "Students could not be deleted because related applications exist.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "An error occurred while deleting all students.");
+        }
         return "redirect:/students";
     }
 
@@ -104,16 +120,30 @@ public class WebController {
     }
 
     @PostMapping("/companies/delete/{id}")
-    public String deleteCompany(@PathVariable Long id) {
-        companyRepository.deleteById(id);
-        checkAndResetSequences();
+    public String deleteCompany(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            companyRepository.deleteById(id);
+            checkAndResetSequences();
+            redirectAttributes.addFlashAttribute("message", "Company deleted successfully.");
+        } catch (DataIntegrityViolationException e) {
+            redirectAttributes.addFlashAttribute("error", "Company could not be deleted because related placement drives exist.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "An error occurred while deleting the company.");
+        }
         return "redirect:/companies";
     }
 
     @PostMapping("/companies/delete/all")
-    public String deleteAllCompanies() {
-        companyRepository.deleteAll();
-        checkAndResetSequences();
+    public String deleteAllCompanies(RedirectAttributes redirectAttributes) {
+        try {
+            companyRepository.deleteAll();
+            checkAndResetSequences();
+            redirectAttributes.addFlashAttribute("message", "All companies deleted successfully.");
+        } catch (DataIntegrityViolationException e) {
+            redirectAttributes.addFlashAttribute("error", "Companies could not be deleted because related placement drives exist.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "An error occurred while deleting all companies.");
+        }
         return "redirect:/companies";
     }
 
@@ -137,16 +167,30 @@ public class WebController {
     }
 
     @PostMapping("/drives/delete/{id}")
-    public String deleteDrive(@PathVariable Long id) {
-        driveRepository.deleteById(id);
-        checkAndResetSequences();
+    public String deleteDrive(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            driveRepository.deleteById(id);
+            checkAndResetSequences();
+            redirectAttributes.addFlashAttribute("message", "Placement drive deleted successfully.");
+        } catch (DataIntegrityViolationException e) {
+            redirectAttributes.addFlashAttribute("error", "Placement drive could not be deleted because related applications exist. Delete the applications first.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "An error occurred while deleting the placement drive.");
+        }
         return "redirect:/drives";
     }
 
     @PostMapping("/drives/delete/all")
-    public String deleteAllDrives() {
-        driveRepository.deleteAll();
-        checkAndResetSequences();
+    public String deleteAllDrives(RedirectAttributes redirectAttributes) {
+        try {
+            driveRepository.deleteAll();
+            checkAndResetSequences();
+            redirectAttributes.addFlashAttribute("message", "All placement drives deleted successfully.");
+        } catch (DataIntegrityViolationException e) {
+            redirectAttributes.addFlashAttribute("error", "Placement drives could not be deleted because related applications exist.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "An error occurred while deleting placement drives.");
+        }
         return "redirect:/drives";
     }
 
@@ -177,7 +221,7 @@ public class WebController {
     }
 
     @PostMapping("/applications/{id}/status")
-    public String updateApplicationStatus(@PathVariable Long id, @RequestParam ApplicationStatus status) {
+    public String updateApplicationStatus(@PathVariable Long id, @RequestParam ApplicationStatus status, RedirectAttributes redirectAttributes) {
         Application application = applicationRepository.findById(id).orElseThrow();
         application.setStatus(status);
         if (status == ApplicationStatus.SELECTED) {
@@ -186,20 +230,31 @@ public class WebController {
             studentRepository.save(student);
         }
         applicationRepository.save(application);
+        redirectAttributes.addFlashAttribute("message", "Application status updated.");
         return "redirect:/applications";
     }
 
     @PostMapping("/applications/delete/{id}")
-    public String deleteApplication(@PathVariable Long id) {
-        applicationRepository.deleteById(id);
-        checkAndResetSequences();
+    public String deleteApplication(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            applicationRepository.deleteById(id);
+            checkAndResetSequences();
+            redirectAttributes.addFlashAttribute("message", "Application deleted successfully.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "An error occurred while deleting the application.");
+        }
         return "redirect:/applications";
     }
 
     @PostMapping("/applications/delete/all")
-    public String deleteAllApplications() {
-        applicationRepository.deleteAll();
-        checkAndResetSequences();
+    public String deleteAllApplications(RedirectAttributes redirectAttributes) {
+        try {
+            applicationRepository.deleteAll();
+            checkAndResetSequences();
+            redirectAttributes.addFlashAttribute("message", "All applications deleted successfully.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "An error occurred while deleting applications.");
+        }
         return "redirect:/applications";
     }
 

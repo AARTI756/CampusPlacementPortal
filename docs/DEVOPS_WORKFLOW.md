@@ -42,9 +42,9 @@
 15. Final End-to-End Release, Documentation and Viva
 
 ## 5. Kanban/Scrum Plan
-- **To Do:** Tasks 7-15 (Jenkins, Selenium, Docker, Ansible)
+- **To Do:** Tasks 8-15 (Pipeline as Code, Selenium, Docker, Ansible)
 - **In Progress:** None
-- **Done:** Tasks 1, 2, 3, 4, 5, 6 (MVP Development, Scope, Architecture, Git init, Branching, MVP Completion)
+- **Done:** Tasks 1, 2, 3, 4, 5, 6, 7 (MVP Development, Scope, Architecture, Git init, Branching, MVP Completion, Jenkins CI)
 
 ## 6. Definition of Done (DoD)
 - Code compiles without errors using `mvn clean package`.
@@ -61,3 +61,30 @@
 4. **Test:** Automated unit testing via JUnit (and later E2E via Selenium).
 5. **Release & Deploy:** Using Jenkins CI/CD to package the application and deploy it as a Docker container.
 6. **Operate & Monitor:** Using configuration management tools (Ansible) to ensure reliable provisioning and monitoring the application state.
+
+## 8. Task 7 — Jenkins Installation and CI Job
+
+### Jenkins Environment
+- **Jenkins Version:** 2.568.2
+- **Installed as:** Windows service (`Jenkins`)
+- **Jenkins URL:** http://localhost:8081
+- **Note:** Application (Campus Placement Portal) runs on port 8080; Jenkins runs on port 8081 to avoid conflicts.
+
+### Jenkins CI Job: CampusPlacementPortal-CI
+- **Job Type:** Freestyle project
+- **Job Name:** `CampusPlacementPortal-CI`
+- **Source Code Management:** Git
+  - Repository URL: `https://github.com/AARTI756/CampusPlacementPortal.git`
+  - Branch: `*/develop`
+- **Build Tool:** Maven (`Maven-3.9.16`, located at `C:\DevTools\apache-maven-3.9.16`)
+- **Build Command:** `mvn clean test package`
+- **Build #1 Result:** SUCCESS (Duration: ~96 seconds)
+
+### What the CI Job Validates
+1. Clones the `develop` branch from GitHub.
+2. Runs `mvn clean` to ensure a clean build state.
+3. Executes `mvn test` — runs the Spring Boot integration test suite (H2 in-memory database, no external dependencies needed).
+4. Runs `mvn package` — compiles all 13 source files and packages the application into a Spring Boot executable JAR (`placement-portal-0.0.1-SNAPSHOT.jar`).
+5. Fails the build if any test fails or if Maven compilation errors occur.
+6. Reports a clear SUCCESS or FAILURE result in the Jenkins dashboard.
+

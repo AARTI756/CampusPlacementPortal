@@ -6,7 +6,12 @@
         <button class="btn btn-outline-success" type="submit">Search</button>
         <a href="/companies" class="btn btn-outline-secondary ms-2">Clear</a>
     </form>
-    <a href="/companies/new" class="btn btn-primary">Add Company</a>
+    <div>
+        <a href="/companies/new" class="btn btn-primary">Add Company</a>
+        <form action="/companies/delete/all" method="post" class="d-inline" onsubmit="return confirm('WARNING: This will delete ALL companies and their related drives/applications. Are you sure?');">
+            <button type="submit" class="btn btn-danger ms-2">Delete All</button>
+        </form>
+    </div>
 </div>
 <table class="table table-striped mt-3">
     <thead>
@@ -15,6 +20,7 @@
             <th>Name</th>
             <th>Industry</th>
             <th>Description</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -23,6 +29,11 @@
             <td th:text="${company.name}"></td>
             <td th:text="${company.industry}"></td>
             <td th:text="${company.description}"></td>
+            <td>
+                <form th:action="@{/companies/delete/{id}(id=${company.id})}" method="post" onsubmit="return confirm('Are you sure you want to delete this record?');">
+                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                </form>
+            </td>
         </tr>
     </tbody>
 </table>

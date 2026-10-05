@@ -10,6 +10,7 @@ import com.college.placement.repository.CompanyRepository;
 import com.college.placement.repository.PlacementDriveRepository;
 import com.college.placement.repository.StudentRepository;
 import com.college.placement.service.DashboardService;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +18,9 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class WebController {
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Autowired
     private DashboardService dashboardService;
@@ -62,6 +66,20 @@ public class WebController {
         return "redirect:/students";
     }
 
+    @PostMapping("/students/delete/{id}")
+    public String deleteStudent(@PathVariable Long id) {
+        studentRepository.deleteById(id);
+        checkAndResetSequences();
+        return "redirect:/students";
+    }
+
+    @PostMapping("/students/delete/all")
+    public String deleteAllStudents() {
+        studentRepository.deleteAll();
+        checkAndResetSequences();
+        return "redirect:/students";
+    }
+
     @GetMapping("/companies")
     public String companies(Model model, @RequestParam(required = false) String keyword) {
         if (keyword != null && !keyword.isEmpty()) {
@@ -85,6 +103,20 @@ public class WebController {
         return "redirect:/companies";
     }
 
+    @PostMapping("/companies/delete/{id}")
+    public String deleteCompany(@PathVariable Long id) {
+        companyRepository.deleteById(id);
+        checkAndResetSequences();
+        return "redirect:/companies";
+    }
+
+    @PostMapping("/companies/delete/all")
+    public String deleteAllCompanies() {
+        companyRepository.deleteAll();
+        checkAndResetSequences();
+        return "redirect:/companies";
+    }
+
     @GetMapping("/drives")
     public String drives(Model model) {
         model.addAttribute("drives", driveRepository.findAll());
@@ -101,6 +133,20 @@ public class WebController {
     @PostMapping("/drives")
     public String saveDrive(@ModelAttribute PlacementDrive drive) {
         driveRepository.save(drive);
+        return "redirect:/drives";
+    }
+
+    @PostMapping("/drives/delete/{id}")
+    public String deleteDrive(@PathVariable Long id) {
+        driveRepository.deleteById(id);
+        checkAndResetSequences();
+        return "redirect:/drives";
+    }
+
+    @PostMapping("/drives/delete/all")
+    public String deleteAllDrives() {
+        driveRepository.deleteAll();
+        checkAndResetSequences();
         return "redirect:/drives";
     }
 
@@ -141,5 +187,42 @@ public class WebController {
         }
         applicationRepository.save(application);
         return "redirect:/applications";
+    }
+
+    @PostMapping("/applications/delete/{id}")
+    public String deleteApplication(@PathVariable Long id) {
+        applicationRepository.deleteById(id);
+        checkAndResetSequences();
+        return "redirect:/applications";
+    }
+
+    @PostMapping("/applications/delete/all")
+    public String deleteAllApplications() {
+        applicationRepository.deleteAll();
+        checkAndResetSequences();
+        return "redirect:/applications";
+    }
+
+    private void checkAndResetSequences() {
+        resetSequenceIfEmpty("placement_applications", "placement_applications_id_seq", applicationRepository.count());
+        resetSequenceIfEmpty("placement_drives", "placement_drives_id_seq", driveRepository.count());
+        resetSequenceIfEmpty("companies", "companies_id_seq", companyRepository.count());
+        resetSequenceIfEmpty("students", "students_id_seq", studentRepository.count());
+    }
+
+    private void resetSequenceIfEmpty(String tableName, String sequenceName, long count) {
+        if (count == 0) {
+            try {
+                // Try PostgreSQL syntax
+                jdbcTemplate.execute("ALTER SEQUENCE " + sequenceName + " RESTART WITH 1");
+            } catch (Exception e) {
+                try {
+                    // Try H2 syntax for tests
+                    jdbcTemplate.execute("ALTER TABLE " + tableName + " ALTER COLUMN id RESTART WITH 1");
+                } catch (Exception ex) {
+                    // Ignore if both fail
+                }
+            }
+        }
     }
 }

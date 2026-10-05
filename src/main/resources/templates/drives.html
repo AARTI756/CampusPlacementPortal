@@ -1,5 +1,13 @@
 <div th:replace="~{header}"></div>
-<h2>Placement Drives <a href="/drives/new" class="btn btn-primary float-end">Create Drive</a></h2>
+<div class="d-flex justify-content-between align-items-center mt-3 mb-3">
+    <h2>Placement Drives</h2>
+    <div>
+        <a href="/drives/new" class="btn btn-primary">Create Drive</a>
+        <form action="/drives/delete/all" method="post" class="d-inline" onsubmit="return confirm('WARNING: This will delete ALL drives and their related applications. Are you sure?');">
+            <button type="submit" class="btn btn-danger ms-2">Delete All</button>
+        </form>
+    </div>
+</div>
 <table class="table table-striped mt-3">
     <thead>
         <tr>
@@ -9,6 +17,7 @@
             <th>Date</th>
             <th>Min CGPA</th>
             <th>Status</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -19,6 +28,11 @@
             <td th:text="${drive.date}"></td>
             <td th:text="${drive.minimumCgpa}"></td>
             <td th:text="${drive.status}"></td>
+            <td>
+                <form th:action="@{/drives/delete/{id}(id=${drive.id})}" method="post" onsubmit="return confirm('Are you sure you want to delete this record?');">
+                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                </form>
+            </td>
         </tr>
     </tbody>
 </table>

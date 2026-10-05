@@ -1,6 +1,14 @@
 <div th:replace="~{header}"></div>
-<h2>Applications <a href="/applications/new" class="btn btn-primary float-end">New Application</a></h2>
-<form action="/applications" method="get" class="d-flex mb-3 mt-3 w-50">
+<div class="d-flex justify-content-between align-items-center mt-3 mb-3">
+    <h2>Applications</h2>
+    <div>
+        <a href="/applications/new" class="btn btn-primary">New Application</a>
+        <form action="/applications/delete/all" method="post" class="d-inline" onsubmit="return confirm('WARNING: This will delete ALL applications. Are you sure?');">
+            <button type="submit" class="btn btn-danger ms-2">Delete All</button>
+        </form>
+    </div>
+</div>
+<form action="/applications" method="get" class="d-flex mb-3 w-50">
     <select name="status" class="form-select me-2" onchange="this.form.submit()">
         <option value="" th:selected="${currentStatus == 'ALL'}">All Statuses</option>
         <option value="APPLIED" th:selected="${currentStatus == 'APPLIED'}">Applied</option>
@@ -29,7 +37,7 @@
             <td th:text="${app.placementDrive.jobRole}"></td>
             <td th:text="${app.status}"></td>
             <td>
-                <form th:action="@{/applications/{id}/status(id=${app.id})}" method="post" class="d-inline">
+                <form th:action="@{/applications/{id}/status(id=${app.id})}" method="post" class="d-inline me-2">
                     <select name="status" onchange="this.form.submit()" class="form-select form-select-sm d-inline w-auto">
                         <option th:selected="${app.status.name() == 'APPLIED'}" value="APPLIED">APPLIED</option>
                         <option th:selected="${app.status.name() == 'SHORTLISTED'}" value="SHORTLISTED">SHORTLISTED</option>
@@ -37,6 +45,9 @@
                         <option th:selected="${app.status.name() == 'SELECTED'}" value="SELECTED">SELECTED</option>
                         <option th:selected="${app.status.name() == 'REJECTED'}" value="REJECTED">REJECTED</option>
                     </select>
+                </form>
+                <form th:action="@{/applications/delete/{id}(id=${app.id})}" method="post" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this application?');">
+                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
                 </form>
             </td>
         </tr>

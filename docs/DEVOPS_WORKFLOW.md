@@ -133,3 +133,29 @@
   5. `StudentSeleniumTest.testDeleteStudent` - Deletion and javascript confirmation alert handling.
 - **Execution Strategy:** Tests rely on `baseUrl` property (defaulting to `http://localhost:8080`) to interact with the active Spring Boot environment without wiping data globally. Test isolation achieved using unique UUIDs for mock data. Wait states are handled securely via `WebDriverWait` explicit conditions.
 - **Result:** Successfully built and executed via `mvn test -Dtest="*SeleniumTest"`, resulting in a passing test suite on the `feature/selenium-tests` branch.
+
+## 10. Task 10 - Continuous Testing in Jenkins
+
+### Objective
+Configure Jenkins so that the existing Selenium/UI tests and required Maven tests can be automatically executed as part of Jenkins continuous testing.
+
+### Jenkins Continuous Testing Job
+- **Job Type:** Pipeline (from SCM)
+- **Job Name:** CampusPlacementPortal-Continuous-Testing
+- **Jenkins URL:** http://localhost:8081
+- **SCM Repository:** https://github.com/AARTI756/CampusPlacementPortal.git
+- **Branch:** */feature/continuous-testing
+- **Pipeline Definition:** Jenkinsfile-Continuous-Testing
+
+### Pipeline Workflow
+1. **Checkout:** Pulls the latest code from feature/continuous-testing.
+2. **Maven Unit Tests:** Executes mvn clean test -Dtest="PlacementPortalApplicationTests" to ensure backend logic and database mappings are correct.
+3. **Build & Package:** Executes mvn package -DskipTests to build the application JAR.
+4. **Start Application:** Starts the Spring Boot application as a background process on port 8080. Waits and verifies the application is HTTP 200 UP before proceeding.
+5. **Selenium UI Tests:** Executes the Selenium suite mvn test -Dtest="*SeleniumTest" "-DbaseUrl=http://localhost:8080" against the live application.
+6. **Cleanup:** Forcefully stops the background application process on port 8080 using PowerShell to avoid port binding conflicts in subsequent builds.
+7. **Publish Test Results:** Uses the JUnit plugin to publish Surefire XML reports (target/surefire-reports/*.xml) to the Jenkins dashboard.
+
+### Expected Success / Results
+- **Reporting:** Test results (Pass/Fail metrics, durations) are visible inside the Jenkins build interface.
+- **Resilience:** The pipeline successfully starts the application, tests the application via headless Chrome, and correctly cleans up the Spring Boot process upon both success and failure. A failed test properly fails the Jenkins build.

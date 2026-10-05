@@ -42,9 +42,9 @@
 15. Final End-to-End Release, Documentation and Viva
 
 ## 5. Kanban/Scrum Plan
-- **To Do:** Tasks 8-15 (Pipeline as Code, Selenium, Docker, Ansible)
+- **To Do:** Tasks 9-15 (Selenium, Docker, Ansible, Provisioning, Final Release)
 - **In Progress:** None
-- **Done:** Tasks 1, 2, 3, 4, 5, 6, 7 (MVP Development, Scope, Architecture, Git init, Branching, MVP Completion, Jenkins CI)
+- **Done:** Tasks 1, 2, 3, 4, 5, 6, 7, 8 (MVP Development, Scope, Architecture, Git init, Branching, MVP Completion, Jenkins CI, Pipeline as Code)
 
 ## 6. Definition of Done (DoD)
 - Code compiles without errors using `mvn clean package`.
@@ -88,3 +88,36 @@
 5. Fails the build if any test fails or if Maven compilation errors occur.
 6. Reports a clear SUCCESS or FAILURE result in the Jenkins dashboard.
 
+
+## 9. Task 8 — Pipeline as Code and Server Deployment
+
+### Jenkins Pipeline Job: CampusPlacementPortal-Pipeline
+- **Job Type:** Pipeline (from SCM)
+- **Job Name:** `CampusPlacementPortal-Pipeline`
+- **Jenkins URL:** http://localhost:8081
+- **Pipeline Definition:** `Jenkinsfile` (stored in repository root)
+- **SCM Repository:** `https://github.com/AARTI756/CampusPlacementPortal.git`
+- **Branch:** `*/develop`
+- **Script Path:** `Jenkinsfile`
+
+### Pipeline Stages
+| Stage | Description | Result |
+|-------|-------------|--------|
+| Checkout | Git clone of `develop` branch | SUCCESS |
+| Build & Test | `mvn clean test` — all JUnit tests | SUCCESS |
+| Package | `mvn package -DskipTests` — produces executable JAR | SUCCESS |
+| Deploy | Copies JAR to `C:\CampusPlacementPortal\deploy`, starts on port 8082 | SUCCESS |
+| Verify | HTTP health check `http://localhost:8082/` — expects HTTP 200 | SUCCESS |
+
+### Deployment Details
+- **Deployment Method:** Local Spring Boot JAR deployment (no Docker — reserved for Task 11)
+- **Deploy Directory:** `C:\CampusPlacementPortal\deploy\`
+- **JAR File:** `placement-portal-0.0.1-SNAPSHOT.jar`
+- **Deployment Port:** `8082` (avoids conflict with dev app on 8080 and Jenkins on 8081)
+- **JVM Args:** `-Duser.timezone=Asia/Kolkata`
+- **Deployment Verification:** `Invoke-WebRequest http://localhost:8082/` — HTTP 200 OK
+
+### Build Results
+- **Build #2 Result:** SUCCESS
+- **Duration:** ~81 seconds
+- **Console confirmation:** `HTTP Status: 200` / `Deployment verified successfully!`

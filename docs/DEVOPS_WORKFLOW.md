@@ -42,9 +42,9 @@
 15. Final End-to-End Release, Documentation and Viva
 
 ## 5. Kanban/Scrum Plan
-- **To Do:** Tasks 10-15 (Continuous Testing, Docker, Ansible, Provisioning, Final Release)
+- **To Do:** Tasks 11-15 (Docker, Ansible, Provisioning, Final Release)
 - **In Progress:** None
-- **Done:** Tasks 1, 2, 3, 4, 5, 6, 7, 8 (MVP Development, Scope, Architecture, Git init, Branching, MVP Completion, Jenkins CI, Pipeline as Code)
+- **Done:** Tasks 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 (MVP Development, Scope, Architecture, Git init, Branching, MVP Completion, Jenkins CI, Pipeline as Code, Selenium Design, Continuous Testing)
 
 ## 6. Definition of Done (DoD)
 - Code compiles without errors using `mvn clean package`.
@@ -159,3 +159,4 @@ Configure Jenkins so that the existing Selenium/UI tests and required Maven test
 ### Expected Success / Results
 - **Reporting:** Test results (Pass/Fail metrics, durations) are visible inside the Jenkins build interface.
 - **Resilience:** The pipeline successfully starts the application, tests the application via headless Chrome, and correctly cleans up the Spring Boot process upon both success and failure. A failed test properly fails the Jenkins build.
+

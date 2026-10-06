@@ -41,7 +41,7 @@ pipeline {
                 '''
                 
                 // Deploy using Docker Compose (which respects network and volume settings)
-                bat 'docker compose up -d app'
+                bat 'docker compose -p campusplacementportal up -d app'
             }
         }
 
@@ -68,6 +68,7 @@ pipeline {
         }
     }
 }
+
 
 
 

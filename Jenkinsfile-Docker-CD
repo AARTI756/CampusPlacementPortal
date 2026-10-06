@@ -1,0 +1,70 @@
+pipeline {
+    agent any
+
+    tools {
+        maven 'Maven'
+        jdk 'JDK 17'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'feature/jenkins-docker-cd', url: 'https://github.com/AARTI756/CampusPlacementPortal.git'
+            }
+        }
+
+        stage('Unit Test') {
+            steps {
+                bat 'mvn clean test -Duser.timezone=UTC'
+            }
+        }
+
+        stage('Package') {
+            steps {
+                bat 'mvn package -DskipTests'
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                bat 'docker build -t campus-placement-portal:v2 -t campus-placement-portal:latest .'
+            }
+        }
+
+        stage('Docker Deployment') {
+            steps {
+                // Remove existing container if it exists
+                bat '''
+                @echo off
+                docker stop campusplacementportal-app-cd 2>nul || exit /b 0
+                docker rm campusplacementportal-app-cd 2>nul || exit /b 0
+                '''
+                
+                // Deploy using Docker Compose (which respects network and volume settings)
+                bat 'docker compose up -d app'
+            }
+        }
+
+        stage('Deployment Verification') {
+            steps {
+                bat 'powershell -NoProfile -Command "Start-Sleep -Seconds 15"'
+                
+                bat 'powershell -NoProfile -Command "$r = Invoke-WebRequest -Uri http://localhost:8083/ -UseBasicParsing; if ($r.StatusCode -ne 200) { exit 1 } else { Write-Host \'Dashboard OK (200)\' }"'
+                bat 'powershell -NoProfile -Command "$r = Invoke-WebRequest -Uri http://localhost:8083/students -UseBasicParsing; if ($r.StatusCode -ne 200) { exit 1 } else { Write-Host \'Students Page OK (200)\' }"'
+            }
+        }
+
+        stage('Docker Verification') {
+            steps {
+                bat 'docker images campus-placement-portal'
+                bat 'docker ps -a --filter "name=campusplacementportal"'
+            }
+        }
+    }
+
+    post {
+        always {
+            junit 'target/surefire-reports/*.xml'
+        }
+    }
+}

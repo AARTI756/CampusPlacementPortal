@@ -42,9 +42,9 @@
 15. Final End-to-End Release, Documentation and Viva
 
 ## 5. Kanban/Scrum Plan
-- **To Do:** Tasks 12-15 (Jenkins-Docker CD, Ansible, Provisioning, Final Release)
+- **To Do:** Tasks 13-15 (Ansible, Provisioning, Final Release)
 - **In Progress:** None
-- **Done:** Tasks 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 (MVP Development, Scope, Architecture, Git init, Branching, MVP Completion, Jenkins CI, Pipeline as Code, Selenium Design, Continuous Testing, Docker Lifecycle)
+- **Done:** Tasks 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 (MVP Development, Scope, Architecture, Git init, Branching, MVP Completion, Jenkins CI, Pipeline as Code, Selenium Design, Continuous Testing, Docker Lifecycle, Jenkins-Docker CD)
 
 ## 6. Definition of Done (DoD)
 - Code compiles without errors using `mvn clean package`.
@@ -204,3 +204,35 @@ To completely remove the containers and network (but preserve the volume data):
 
 To remove everything including the database volume (destructive):
 `docker compose down -v`
+
+
+
+## 12. Task 12 - Jenkins-Docker Continuous Deployment
+
+### Objective
+Create a Jenkins Pipeline that automatically builds the application, builds the Docker image, and continuously deploys it as a Docker container, verifying the deployment via HTTP.
+
+### Implementation Details
+- **Branch:** `feature/jenkins-docker-cd`
+- **Jenkins Job:** `CampusPlacementPortal-Docker-CD`
+- **Jenkinsfile:** `Jenkinsfile-Docker-CD`
+- **Jenkins URL:** `http://localhost:8081`
+- **Docker Image:** `campus-placement-portal:v2` (and `latest`)
+- **Container Name:** `campusplacementportal-app-cd`
+- **Deployment Port:** Host port `8083` -> Container port `8080`
+- **Database Connectivity:** The container connects to the existing `postgres:15` service via the `placement_net` Docker network. The persistent volume `postgres_data` is preserved across redeployments.
+
+### Pipeline Stages
+1. **Checkout:** Clones the repository from the correct branch.
+2. **Unit Test:** Runs Maven tests (`mvn clean test`) and fails the build if they fail.
+3. **Package:** Packages the JAR for the Docker build context.
+4. **Docker Build:** Builds the new application image using the multi-stage Dockerfile.
+5. **Docker Deployment:** Stops and removes the previous container, then runs `docker compose up -d app` to deploy the new container without destroying the database or volume.
+6. **Deployment Verification:** Waits for startup, then uses PowerShell to verify HTTP 200 responses at `http://localhost:8083/` and `http://localhost:8083/students`.
+7. **Docker Verification:** Runs `docker images` and `docker ps` in the pipeline console to prove the lifecycle commands.
+8. **Publish Results:** Publishes JUnit XML test reports.
+
+### Verification Outcome
+- Tests ran successfully and were published.
+- Docker application is reachable and data persistence was maintained through the redeployment.
+

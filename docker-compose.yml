@@ -19,7 +19,8 @@ services:
 
   app:
     build: .
-    image: campus-placement-portal:latest
+    container_name: campusplacementportal-app-cd
+    image: campus-placement-portal:v2
     ports:
       - "8083:8080"
     environment:
@@ -37,3 +38,4 @@ networks:
 
 volumes:
   postgres_data:
+

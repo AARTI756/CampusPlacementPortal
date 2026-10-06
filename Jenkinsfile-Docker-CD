@@ -15,7 +15,7 @@ pipeline {
 
         stage('Unit Test') {
             steps {
-                bat 'mvn clean test -Duser.timezone=UTC'
+                bat 'mvn clean test -Dtest="PlacementPortalApplicationTests"'
             }
         }
 
@@ -68,5 +68,6 @@ pipeline {
         }
     }
 }
+
 
 

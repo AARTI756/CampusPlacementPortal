@@ -1,0 +1,166 @@
+---
+# ============================================================
+# Campus Placement Tracking Portal - Ansible Configuration
+# Task 13: Configuration Management with Ansible
+# ============================================================
+# Run from project root (PowerShell):
+#   wsl ansible-playbook -i ansible/inventory.ini ansible/site.yml
+# ============================================================
+
+- name: "Campus Placement Portal - Docker Configuration Management"
+  hosts: local
+  gather_facts: yes
+
+  vars_files:
+    - group_vars/all.yml
+
+  tasks:
+
+    # ─────────────────────────────────────────────────────────
+    # SECTION 1: Environment Verification
+    # ─────────────────────────────────────────────────────────
+    - name: "[1/9] Print task header"
+      ansible.builtin.debug:
+        msg: "=== Campus Placement Portal - Ansible Config Management (Task 13) ==="
+
+    - name: "[2/9] Verify Docker CLI is available (via Windows host)"
+      ansible.builtin.shell: /mnt/c/Windows/System32/cmd.exe /c "docker --version"
+      register: docker_version_result
+      changed_when: false
+      failed_when: docker_version_result.rc != 0
+
+    - name: "[3/9] Display Docker version"
+      ansible.builtin.debug:
+        msg: "Docker: {{ docker_version_result.stdout | trim }}"
+
+    - name: "[4/9] Gather list of running Docker containers"
+      ansible.builtin.shell: /mnt/c/Windows/System32/cmd.exe /c "docker ps --format table"
+      register: running_containers
+      changed_when: false
+
+    - name: "[5/9] Display running containers"
+      ansible.builtin.debug:
+        msg: "Running containers:\n{{ running_containers.stdout }}"
+
+    # ─────────────────────────────────────────────────────────
+    # SECTION 2: Docker Image Verification
+    # ─────────────────────────────────────────────────────────
+    - name: "[6/9] Verify Docker image exists: {{ docker_image }}"
+      ansible.builtin.shell: /mnt/c/Windows/System32/cmd.exe /c "docker image inspect {{ docker_image }}"
+      register: image_inspect_result
+      changed_when: false
+      failed_when: image_inspect_result.rc != 0
+
+    - name: "Display application image confirmation"
+      ansible.builtin.debug:
+        msg: "Image '{{ docker_image }}' exists and is ready for deployment."
+
+    # ─────────────────────────────────────────────────────────
+    # SECTION 3: Database Container Verification
+    # ─────────────────────────────────────────────────────────
+    - name: "[7/9] Check if PostgreSQL container is running"
+      ansible.builtin.shell: >
+        /mnt/c/Windows/System32/cmd.exe /c
+        "docker ps -q --filter name={{ db_container_name }} --filter status=running"
+      register: db_running_id
+      changed_when: false
+      failed_when: false
+
+    - name: "Display PostgreSQL container status"
+      ansible.builtin.debug:
+        msg: >-
+          PostgreSQL container '{{ db_container_name }}':
+          {{ 'RUNNING' if db_running_id.stdout | trim != '' else 'STOPPED/NOT FOUND' }}
+
+    - name: "Ensure PostgreSQL container is running (start if stopped)"
+      ansible.builtin.shell: /mnt/c/Windows/System32/cmd.exe /c "docker start {{ db_container_name }}"
+      when: db_running_id.stdout | trim == ""
+
+    - name: "PostgreSQL already running - no change needed"
+      ansible.builtin.debug:
+        msg: "PostgreSQL container '{{ db_container_name }}' is already running."
+      when: db_running_id.stdout | trim != ""
+
+    # ─────────────────────────────────────────────────────────
+    # SECTION 4: Application Container Verification & Management
+    # ─────────────────────────────────────────────────────────
+    - name: "[8/9] Check current status of application container"
+      ansible.builtin.shell: >
+        /mnt/c/Windows/System32/cmd.exe /c
+        "docker ps -q --filter name={{ app_container_name }} --filter status=running"
+      register: app_running_id
+      changed_when: false
+      failed_when: false
+
+    - name: "Display application container status"
+      ansible.builtin.debug:
+        msg: >-
+          App container '{{ app_container_name }}':
+          {{ 'RUNNING' if app_running_id.stdout | trim != '' else 'STOPPED/NOT FOUND' }}
+
+    - name: "Start application container if stopped (idempotent)"
+      ansible.builtin.shell: /mnt/c/Windows/System32/cmd.exe /c "docker start {{ app_container_name }}"
+      when: app_running_id.stdout | trim == ""
+
+    - name: "Application container already running - no change needed"
+      ansible.builtin.debug:
+        msg: "Container '{{ app_container_name }}' is already running - no change required."
+      when: app_running_id.stdout | trim != ""
+
+    # ─────────────────────────────────────────────────────────
+    # SECTION 5: Application Deployment Validation
+    # ─────────────────────────────────────────────────────────
+    - name: "[9/9] Verify application dashboard: {{ app_url }}"
+      ansible.builtin.uri:
+        url: "{{ app_url }}/"
+        method: GET
+        status_code: 200
+        timeout: 15
+      register: app_health_check
+      retries: 3
+      delay: 5
+      until: app_health_check.status == 200
+
+    - name: "Verify /students endpoint"
+      ansible.builtin.uri:
+        url: "{{ app_url }}/students"
+        method: GET
+        status_code: 200
+        timeout: 15
+      register: students_check
+
+    - name: "Verify /companies endpoint"
+      ansible.builtin.uri:
+        url: "{{ app_url }}/companies"
+        method: GET
+        status_code: 200
+        timeout: 15
+      register: companies_check
+
+    - name: "Verify /drives endpoint"
+      ansible.builtin.uri:
+        url: "{{ app_url }}/drives"
+        method: GET
+        status_code: 200
+        timeout: 15
+      register: drives_check
+
+    # ─────────────────────────────────────────────────────────
+    # SECTION 6: Summary
+    # ─────────────────────────────────────────────────────────
+    - name: "=== CONFIGURATION MANAGEMENT SUMMARY ==="
+      ansible.builtin.debug:
+        msg:
+          - "============================================="
+          - " Campus Placement Portal - Ansible Summary   "
+          - "============================================="
+          - "  App Container : {{ app_container_name }}"
+          - "  Docker Image  : {{ docker_image }}"
+          - "  App URL       : {{ app_url }}"
+          - "  Dashboard     : HTTP {{ app_health_check.status }}"
+          - "  /students     : HTTP {{ students_check.status }}"
+          - "  /companies    : HTTP {{ companies_check.status }}"
+          - "  /drives       : HTTP {{ drives_check.status }}"
+          - "============================================="
+          - "  ALL CHECKS PASSED - Environment Healthy!   "
+          - "============================================="

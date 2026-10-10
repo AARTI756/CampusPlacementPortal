@@ -42,9 +42,9 @@
 15. Final End-to-End Release, Documentation and Viva
 
 ## 5. Kanban/Scrum Plan
-- **To Do:** Tasks 13-15 (Ansible, Provisioning, Final Release)
+- **To Do:** Tasks 14-15 (Provisioning, Final Release)
 - **In Progress:** None
-- **Done:** Tasks 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 (MVP Development, Scope, Architecture, Git init, Branching, MVP Completion, Jenkins CI, Pipeline as Code, Selenium Design, Continuous Testing, Docker Lifecycle, Jenkins-Docker CD)
+- **Done:** Tasks 1-13 (MVP Development, Scope, Architecture, Git init, Branching, MVP Completion, Jenkins CI, Pipeline as Code, Selenium Design, Continuous Testing, Docker Lifecycle, Jenkins-Docker CD, Ansible Config Management)
 
 ## 6. Definition of Done (DoD)
 - Code compiles without errors using `mvn clean package`.
@@ -236,3 +236,56 @@ Create a Jenkins Pipeline that automatically builds the application, builds the 
 - Tests ran successfully and were published.
 - Docker application is reachable and data persistence was maintained through the redeployment.
 
+
+
+
+## 13. Task 13 - Configuration Management with Ansible
+
+### Why Ansible?
+Ansible was selected because:
+- It is agentless (no daemon needed on managed nodes)
+- Simple YAML-based playbooks are easy to read and audit
+- It supports local connection mode, ideal for this Windows/WSL/Docker environment
+- Idempotency is a first-class principle
+- It's widely used in real DevOps pipelines
+
+### Execution Environment
+- **Platform:** WSL (Ubuntu 22.04) on Windows
+- **Ansible Version:** 2.10.8 (Python 3.10.12)
+- **Connection Mode:** `ansible_connection=local` (commands run inside WSL, Docker called via Windows cmd.exe)
+- **Execution Command:**
+  `wsl ansible-playbook -i ansible/inventory.ini ansible/site.yml`
+
+### Inventory
+`ansible/inventory.ini` — targets localhost with a local connection.
+
+### Variables (group_vars/all.yml)
+| Variable | Value |
+|---|---|
+| app_port | 8083 |
+| docker_image | campus-placement-portal:v2 |
+| app_container_name | campusplacementportal-app-cd |
+| db_container_name | campusplacementportal-db-1 |
+| db_port | 5433 |
+| compose_project_name | campusplacementportal |
+
+### Playbook Structure (site.yml)
+1. **Environment Verification** - Verifies Docker CLI available, displays version
+2. **Container Inventory** - Lists all running Docker containers
+3. **Image Verification** - Confirms the application image exists
+4. **PostgreSQL Verification** - Checks DB container is running; starts it if stopped
+5. **Application Verification** - Checks app container is running; starts it if stopped
+6. **HTTP Validation** - Verifies all endpoints return HTTP 200: /, /students, /companies, /drives
+7. **Summary** - Prints a structured status table
+
+### Idempotency Demonstration
+- **Run 1:** `ok=19 changed=0 failed=0 skipped=2 unreachable=0`
+- **Run 2:** `ok=19 changed=0 failed=0 skipped=2 unreachable=0`
+- Zero changes on both runs — fully idempotent.
+- Start tasks are skipped when containers are already running.
+
+### Application Verification Result
+- `http://localhost:8083/` ? HTTP 200
+- `http://localhost:8083/students` ? HTTP 200
+- `http://localhost:8083/companies` ? HTTP 200
+- `http://localhost:8083/drives` ? HTTP 200

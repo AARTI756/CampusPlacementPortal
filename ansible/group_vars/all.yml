@@ -1,0 +1,35 @@
+---
+# Campus Placement Portal - Ansible Variables
+# Task 13: Configuration Management
+
+# Application settings
+app_port: 8083
+app_name: "Campus Placement Tracking Portal"
+app_url: "http://localhost:8083"
+
+# Docker image settings
+docker_image: "campus-placement-portal:v2"
+docker_image_latest: "campus-placement-portal:latest"
+
+# Docker container names
+app_container_name: "campusplacementportal-app-cd"
+db_container_name: "campusplacementportal-db-1"
+
+# PostgreSQL settings
+db_image: "postgres:15"
+db_port: 5433
+db_name: "placement_db"
+db_user: "placement_user"
+
+# Docker network
+docker_network: "campusplacementportal_placement_net"
+
+# Docker Compose project
+compose_project_name: "campusplacementportal"
+
+# Verification endpoints
+verify_endpoints:
+  - "/"
+  - "/students"
+  - "/companies"
+  - "/drives"

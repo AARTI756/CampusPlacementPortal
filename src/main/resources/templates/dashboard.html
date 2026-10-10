@@ -2,34 +2,46 @@
 <h2>Dashboard</h2>
 <div class="row mt-4">
     <div class="col-md-3 mb-3">
-        <div class="card text-white bg-primary">
+        <div class="card text-white bg-primary h-100">
             <div class="card-body">
                 <h5 class="card-title">Total Students</h5>
                 <h2 class="card-text" th:text="${stats.totalStudents}">0</h2>
             </div>
+            <div class="card-footer bg-transparent border-top-0">
+                <a href="/students" class="text-white text-decoration-none">View Details &rarr;</a>
+            </div>
         </div>
     </div>
     <div class="col-md-3 mb-3">
-        <div class="card text-white bg-success">
+        <div class="card text-white bg-success h-100">
             <div class="card-body">
                 <h5 class="card-title">Total Companies</h5>
                 <h2 class="card-text" th:text="${stats.totalCompanies}">0</h2>
             </div>
-        </div>
-    </div>
-    <div class="col-md-3 mb-3">
-        <div class="card text-white bg-info">
-            <div class="card-body">
-                <h5 class="card-title">Total Drives</h5>
-                <h2 class="card-text" th:text="${stats.totalDrives}">0</h2>
+            <div class="card-footer bg-transparent border-top-0">
+                <a href="/companies" class="text-white text-decoration-none">View Details &rarr;</a>
             </div>
         </div>
     </div>
     <div class="col-md-3 mb-3">
-        <div class="card text-white bg-secondary">
+        <div class="card text-white bg-info h-100">
+            <div class="card-body">
+                <h5 class="card-title">Total Drives</h5>
+                <h2 class="card-text" th:text="${stats.totalDrives}">0</h2>
+            </div>
+            <div class="card-footer bg-transparent border-top-0">
+                <a href="/drives" class="text-white text-decoration-none">View Details &rarr;</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-secondary h-100">
             <div class="card-body">
                 <h5 class="card-title">Students Placed</h5>
                 <h2 class="card-text" th:text="${stats.studentsPlaced}">0</h2>
+            </div>
+            <div class="card-footer bg-transparent border-top-0">
+                <a href="/students?placed=true" class="text-white text-decoration-none">View Details &rarr;</a>
             </div>
         </div>
     </div>

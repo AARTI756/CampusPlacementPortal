@@ -42,9 +42,9 @@
 15. Final End-to-End Release, Documentation and Viva
 
 ## 5. Kanban/Scrum Plan
-- **To Do:** Task 15 (Final Release)
+- **Done:** Tasks 1-15 (All Complete)
 - **In Progress:** None
-- **Done:** Tasks 1-14 (MVP Development, Scope, Architecture, Git init, Branching, MVP Completion, Jenkins CI, Pipeline as Code, Selenium Design, Continuous Testing, Docker Lifecycle, Jenkins-Docker CD, Ansible Config Management, Automated Provisioning & Reliability)
+- **Done:** Tasks 1-15 (All Complete)
 
 ## 6. Definition of Done (DoD)
 - Code compiles without errors using `mvn clean package`.
@@ -342,3 +342,39 @@ wsl ansible-playbook -i ansible/inventory.ini ansible/reliability.yml
 ### Database Persistence Result
 PostgreSQL persistence protection was fully successful. docker compose down -v was actively avoided.
 
+
+
+## 15. Task 15 - Final End-to-End Release, Documentation and Viva
+
+### Objective
+Audit all 15 tasks, create the final release branch, polish the UI, rebuild and verify Docker deployment, run all tests, create complete documentation, and tag the release.
+
+### What Was Done
+
+1. **Branch:** Created elease/final-v1.0.0 from eature/provisioning-reliability
+2. **UI Polish:** Dashboard summary cards enhanced with card-footer navigation links (View Details)
+3. **Docker Image v3:** Built from final release code; deployed to port 8083
+4. **Tests Passed:** mvn clean test -DbaseUrl=http://localhost:8083 — 7 tests, 0 failures, BUILD SUCCESS
+5. **Maven Package:** mvn package -DskipTests — JAR built successfully
+6. **Ansible Verified:** All three playbooks passed; idempotency confirmed; recovery demonstrated
+7. **Documentation Created:**
+   - README.md — Complete project guide
+   - docs/FINAL_REPORT.md — 17-section project report
+   - docs/TROUBLESHOOTING.md — Common issues and recovery steps
+   - docs/VIVA_QA.md — 35 project-specific Q&A
+   - docs/RELEASE_CHECKLIST.md — Release verification checklist
+   - docs/evidence/README.md — Evidence capture guide
+   - presentation/VIVA_PRESENTATION.md — 12-slide viva outline
+8. **Release Tag:** 1.0.0 created and pushed
+9. **Working tree:** Clean
+
+### Final Validation
+- Docker: campus-placement-portal:v3 running; HTTP 200 on all endpoints
+- Maven: 7 tests, 0 failures
+- Ansible: ok=19 changed=0 (site.yml), recovery demonstrated (reliability.yml)
+- Git: Working tree clean, tag 1.0.0 pushed
+
+### Limitations
+- Docker Hub registry not configured (local images only)
+- No presentation PPTX generated (Markdown outline provided instead)
+- Demo video not recorded (live demo checklist provided)

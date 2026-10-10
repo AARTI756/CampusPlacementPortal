@@ -1,0 +1,36 @@
+---
+# ============================================================
+# Campus Placement Tracking Portal - Ansible Provisioning
+# Task 14: Automated Provisioning
+# ============================================================
+- name: "Campus Placement Portal - Automated Provisioning"
+  hosts: local
+  gather_facts: yes
+
+  vars_files:
+    - group_vars/all.yml
+
+  tasks:
+    - name: "Verify Docker CLI is available (via Windows host)"
+      ansible.builtin.shell: /mnt/c/Windows/System32/cmd.exe /c "docker --version"
+      register: docker_version_result
+      changed_when: false
+      failed_when: docker_version_result.rc != 0
+
+    - name: "Display Docker version"
+      ansible.builtin.debug:
+        msg: "Docker: {{ docker_version_result.stdout | trim }}"
+
+    - name: "Ensure Docker Compose application and database services are provisioned and running"
+      ansible.builtin.shell: >
+        /mnt/c/Windows/System32/cmd.exe /c
+        "cd /d C:\Users\spa\OneDrive\Desktop\Placement_project\CampusPlacementPortal && docker compose -p {{ compose_project_name }} up -d"
+      register: docker_compose_up
+      changed_when: >
+        'Started' in docker_compose_up.stdout or 'Started' in docker_compose_up.stderr or
+        'Created' in docker_compose_up.stdout or 'Created' in docker_compose_up.stderr or
+        'Recreated' in docker_compose_up.stdout or 'Recreated' in docker_compose_up.stderr
+
+    - name: "Provisioning Result"
+      ansible.builtin.debug:
+        msg: "Provisioning complete. Result: {{ docker_compose_up.stdout | default(docker_compose_up.stderr) }}"

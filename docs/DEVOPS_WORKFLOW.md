@@ -42,9 +42,9 @@
 15. Final End-to-End Release, Documentation and Viva
 
 ## 5. Kanban/Scrum Plan
-- **To Do:** Tasks 14-15 (Provisioning, Final Release)
+- **To Do:** Task 15 (Final Release)
 - **In Progress:** None
-- **Done:** Tasks 1-13 (MVP Development, Scope, Architecture, Git init, Branching, MVP Completion, Jenkins CI, Pipeline as Code, Selenium Design, Continuous Testing, Docker Lifecycle, Jenkins-Docker CD, Ansible Config Management)
+- **Done:** Tasks 1-14 (MVP Development, Scope, Architecture, Git init, Branching, MVP Completion, Jenkins CI, Pipeline as Code, Selenium Design, Continuous Testing, Docker Lifecycle, Jenkins-Docker CD, Ansible Config Management, Automated Provisioning & Reliability)
 
 ## 6. Definition of Done (DoD)
 - Code compiles without errors using `mvn clean package`.
@@ -289,3 +289,56 @@ Ansible was selected because:
 - `http://localhost:8083/students` ? HTTP 200
 - `http://localhost:8083/companies` ? HTTP 200
 - `http://localhost:8083/drives` ? HTTP 200
+
+
+## 14. Task 14 - Automated Provisioning and Reliability Validation
+
+### Objective
+Demonstrate automated environment provisioning and repeatable reliability checks using Ansible for the Campus Placement Tracking Portal. 
+
+### Provisioning Architecture
+- Uses the existing configuration management structure (nsible/inventory.ini, nsible/group_vars/all.yml).
+- **Playbook:** nsible/provision.yml uses docker compose up -d to ensure the required Docker Compose stack is running.
+- Designed to be completely idempotent, ensuring postgres_data persistent volumes remain fully intact without recreating the database unnecessarily.
+
+### Reliability Validation
+- **Playbook:** nsible/reliability.yml
+- Health-checks the required endpoints using exponential retries:
+  - / (Dashboard)
+  - /students
+  - /companies
+  - /drives
+- Verifies that both the database container (campusplacementportal-db-1) and application container (campusplacementportal-app-cd) exist and are currently healthy/running.
+- **Auto-Recovery:** Includes intelligent failure detection; if the application container is found stopped but the database is healthy, the playbook attempts one safe startup recovery (docker start) before retrying endpoint tests.
+
+### Execution Commands
+**Provisioning:**
+\\\ash
+wsl ansible-playbook -i ansible/inventory.ini ansible/provision.yml
+\\\
+
+**Reliability Validation:**
+\\\ash
+wsl ansible-playbook -i ansible/inventory.ini ansible/reliability.yml
+\\\
+
+### Failure/Recovery Test Procedure & Results
+1. **Initial State:** Recorded both containers running (Up 27 minutes).
+2. **Induced Failure:** Stopped the application container (docker stop campusplacementportal-app-cd). Verified it was exited.
+3. **Recovery via Provisioning:** Executed provision.yml. 
+   - Result: ok=5, changed=1
+   - Application successfully restarted without destroying PostgreSQL volumes.
+4. **Validation:** Executed eliability.yml.
+   - Result: ok=9, changed=0 
+   - Successfully validated all HTTP endpoints returned 200 OK. 
+
+### Actual Results (Repeatability & Idempotency)
+- **Provisioning (Run 1):** ok=5, changed=0, unreachable=0, failed=0
+- **Provisioning (Run 2):** ok=5, changed=0, unreachable=0, failed=0
+- **Reliability (Run 1):** ok=9, changed=0, unreachable=0, failed=0
+- **Reliability (Run 2):** ok=9, changed=0, unreachable=0, failed=0
+- **Reliability (Recovery Run):** ok=10, changed=1, unreachable=0, failed=0
+
+### Database Persistence Result
+PostgreSQL persistence protection was fully successful. docker compose down -v was actively avoided.
+

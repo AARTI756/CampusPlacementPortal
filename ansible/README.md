@@ -52,14 +52,14 @@ localhost | SUCCESS => {"ping": "pong"}
 From the project root (Windows PowerShell):
 
 ```powershell
-wsl ansible-playbook -i ansible/inventory.ini ansible/site.yml
+wsl ansible-playbook -i ansible/inventory.ini ansible/provision.yml
 ```
 
 Or from within WSL:
 
 ```bash
 cd /mnt/c/Users/spa/OneDrive/Desktop/Placement_project/CampusPlacementPortal
-ansible-playbook -i ansible/inventory.ini ansible/site.yml
+ansible-playbook -i ansible/inventory.ini ansible/provision.yml
 ```
 
 ### 4. Run Again for Idempotency (Second Run)
@@ -67,7 +67,7 @@ ansible-playbook -i ansible/inventory.ini ansible/site.yml
 Run the exact same command again:
 
 ```powershell
-wsl ansible-playbook -i ansible/inventory.ini ansible/site.yml
+wsl ansible-playbook -i ansible/inventory.ini ansible/provision.yml
 ```
 
 **Expected result:** `changed=0` — no unnecessary changes.
@@ -125,3 +125,17 @@ localhost : ok=N   changed=0   unreachable=0   failed=0
 - It does **NOT** restart the application container unless it is stopped.
 - It does **NOT** delete the PostgreSQL volume or recreate the database.
 - Tasks verify the current state and only act when a change is actually needed.
+
+
+### Task 14: Automated Provisioning & Reliability
+
+**Provision the environment:**
+``bash
+wsl ansible-playbook -i ansible/inventory.ini ansible/provision.yml
+``
+
+**Validate Reliability:**
+``bash
+wsl ansible-playbook -i ansible/inventory.ini ansible/reliability.yml
+``
+

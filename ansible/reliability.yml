@@ -1,0 +1,106 @@
+---
+# ============================================================
+# Campus Placement Tracking Portal - Ansible Reliability
+# Task 14: Reliability Validation
+# ============================================================
+- name: "Campus Placement Portal - Reliability Validation"
+  hosts: local
+  gather_facts: yes
+
+  vars_files:
+    - group_vars/all.yml
+
+  tasks:
+    - name: "Verify Docker CLI is available (via Windows host)"
+      ansible.builtin.shell: /mnt/c/Windows/System32/cmd.exe /c "docker --version"
+      register: docker_version_result
+      changed_when: false
+      failed_when: docker_version_result.rc != 0
+
+    - name: "Check current status of application container"
+      ansible.builtin.shell: >
+        /mnt/c/Windows/System32/cmd.exe /c
+        "docker ps -q --filter name={{ app_container_name }} --filter status=running"
+      register: app_running_id
+      changed_when: false
+      failed_when: false
+
+    - name: "Check if PostgreSQL container is running"
+      ansible.builtin.shell: >
+        /mnt/c/Windows/System32/cmd.exe /c
+        "docker ps -q --filter name={{ db_container_name }} --filter status=running"
+      register: db_running_id
+      changed_when: false
+      failed_when: false
+
+    - name: "Fail if PostgreSQL container is not running"
+      ansible.builtin.fail:
+        msg: "PostgreSQL container '{{ db_container_name }}' is not running!"
+      when: db_running_id.stdout | trim == ""
+
+    - name: "Attempt recovery if Application container is not running"
+      ansible.builtin.shell: /mnt/c/Windows/System32/cmd.exe /c "docker start {{ app_container_name }}"
+      when: app_running_id.stdout | trim == ""
+      register: recovery_attempt
+      changed_when: true
+      ignore_errors: yes
+
+    - name: "Verify application dashboard: {{ app_url }}"
+      ansible.builtin.uri:
+        url: "{{ app_url }}/"
+        method: GET
+        status_code: 200
+        timeout: 15
+      register: app_health_check
+      retries: 5
+      delay: 5
+      until: app_health_check.status == 200
+
+    - name: "Verify /students endpoint"
+      ansible.builtin.uri:
+        url: "{{ app_url }}/students"
+        method: GET
+        status_code: 200
+        timeout: 15
+      register: students_check
+      retries: 3
+      delay: 5
+      until: students_check.status == 200
+
+    - name: "Verify /companies endpoint"
+      ansible.builtin.uri:
+        url: "{{ app_url }}/companies"
+        method: GET
+        status_code: 200
+        timeout: 15
+      register: companies_check
+      retries: 3
+      delay: 5
+      until: companies_check.status == 200
+
+    - name: "Verify /drives endpoint"
+      ansible.builtin.uri:
+        url: "{{ app_url }}/drives"
+        method: GET
+        status_code: 200
+        timeout: 15
+      register: drives_check
+      retries: 3
+      delay: 5
+      until: drives_check.status == 200
+
+    - name: "Reliability Summary"
+      ansible.builtin.debug:
+        msg:
+          - "============================================="
+          - " Reliability Validation Summary              "
+          - "============================================="
+          - "  App Container : {{ 'RECOVERED' if (recovery_attempt is defined and recovery_attempt.changed) else 'HEALTHY' }}"
+          - "  DB Container  : HEALTHY"
+          - "  Dashboard     : HTTP {{ app_health_check.status }}"
+          - "  /students     : HTTP {{ students_check.status }}"
+          - "  /companies    : HTTP {{ companies_check.status }}"
+          - "  /drives       : HTTP {{ drives_check.status }}"
+          - "============================================="
+          - "  RELIABILITY CHECKS PASSED                  "
+          - "============================================="

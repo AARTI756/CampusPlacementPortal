@@ -1,0 +1,581 @@
+/* ==========================================================================
+   Campus Placement Tracking Portal - Modern SaaS Admin Theme
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+:root {
+    --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --bg-page: #f8fafc;
+    --surface-card: #ffffff;
+    --navy-950: #090d16;
+    --navy-900: #0f172a;
+    --navy-800: #1e293b;
+    --navy-700: #334155;
+    --slate-600: #475569;
+    --slate-500: #64748b;
+    --slate-400: #94a3b8;
+    --slate-200: #e2e8f0;
+    --slate-100: #f1f5f9;
+    --slate-50: #f8fafc;
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    --primary-subtle: #eff6ff;
+    --primary-border: #bfdbfe;
+    --success: #10b981;
+    --success-subtle: #ecfdf5;
+    --success-border: #a7f3d0;
+    --success-text: #047857;
+    --warning: #f59e0b;
+    --warning-subtle: #fffbeb;
+    --warning-border: #fde68a;
+    --warning-text: #b45309;
+    --danger: #ef4444;
+    --danger-subtle: #fef2f2;
+    --danger-border: #fecaca;
+    --danger-text: #b91c1c;
+    --info: #0284c7;
+    --info-subtle: #f0f9ff;
+    --info-border: #bae6fd;
+    --info-text: #0369a1;
+    --purple: #8b5cf6;
+    --purple-subtle: #f5f3ff;
+    --purple-border: #ddd6fe;
+    --purple-text: #6d28d9;
+    --card-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.06), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
+    --card-hover-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.04);
+    --radius-md: 0.625rem;
+    --radius-lg: 0.875rem;
+    --radius-xl: 1rem;
+}
+
+body {
+    font-family: var(--font-sans);
+    background-color: var(--bg-page);
+    color: var(--navy-800);
+    line-height: 1.55;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main.main-content {
+    flex: 1 0 auto;
+}
+
+/* ==========================================================================
+   Navigation Bar
+   ========================================================================== */
+.custom-navbar {
+    background: linear-gradient(135deg, var(--navy-950) 0%, var(--navy-900) 100%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+    padding: 0.85rem 0;
+}
+
+.custom-navbar .navbar-brand {
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: #ffffff !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+}
+
+.custom-navbar .brand-icon-box {
+    width: 38px;
+    height: 38px;
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    color: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
+    font-size: 1.15rem;
+}
+
+.custom-navbar .nav-link {
+    font-size: 0.925rem;
+    font-weight: 500;
+    color: #94a3b8 !important;
+    padding: 0.5rem 0.9rem !important;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+}
+
+.custom-navbar .nav-link:hover {
+    color: #ffffff !important;
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.custom-navbar .nav-link.active,
+.custom-navbar .nav-link[aria-current="page"] {
+    color: #ffffff !important;
+    background-color: rgba(37, 99, 235, 0.25);
+    border: 1px solid rgba(59, 130, 246, 0.35);
+    font-weight: 600;
+}
+
+.nav-portal-badge {
+    font-size: 0.725rem;
+    padding: 0.25rem 0.65rem;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 9999px;
+    color: #cbd5e1;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+}
+
+/* ==========================================================================
+   Page Header & Breadcrumbs
+   ========================================================================== */
+.page-header-container {
+    padding: 0.75rem 0 1.5rem 0;
+}
+
+.page-header-title {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--navy-900);
+    letter-spacing: -0.025em;
+    margin-bottom: 0.25rem;
+}
+
+.page-header-subtitle {
+    font-size: 0.925rem;
+    color: var(--slate-500);
+    margin-bottom: 0;
+}
+
+/* ==========================================================================
+   KPI Summary Cards
+   ========================================================================== */
+.stat-kpi-card {
+    background: var(--surface-card);
+    border: 1px solid var(--slate-200);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--card-shadow);
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+    overflow: hidden;
+    position: relative;
+}
+
+.stat-kpi-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--card-hover-shadow);
+    border-color: #cbd5e1;
+}
+
+.stat-kpi-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: transparent;
+}
+
+.stat-kpi-card.border-accent-primary::before { background: #2563eb; }
+.stat-kpi-card.border-accent-success::before { background: #10b981; }
+.stat-kpi-card.border-accent-info::before    { background: #0284c7; }
+.stat-kpi-card.border-accent-purple::before  { background: #8b5cf6; }
+
+.stat-kpi-card .card-body {
+    padding: 1.4rem;
+}
+
+.stat-icon-wrapper {
+    width: 48px;
+    height: 48px;
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.35rem;
+    flex-shrink: 0;
+}
+
+.stat-icon-primary { background: var(--primary-subtle); color: var(--primary); }
+.stat-icon-success { background: var(--success-subtle); color: var(--success-text); }
+.stat-icon-info    { background: var(--info-subtle);    color: var(--info-text); }
+.stat-icon-purple  { background: var(--purple-subtle);  color: var(--purple-text); }
+
+.stat-label {
+    font-size: 0.775rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--slate-500);
+    margin-bottom: 0.25rem;
+}
+
+.stat-value {
+    font-size: 2.15rem;
+    font-weight: 800;
+    color: var(--navy-900);
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    margin-bottom: 0;
+}
+
+.stat-kpi-card .card-footer {
+    background-color: var(--slate-50);
+    border-top: 1px solid var(--slate-200);
+    padding: 0.7rem 1.4rem;
+}
+
+.stat-details-link {
+    font-size: 0.825rem;
+    font-weight: 600;
+    color: var(--primary);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    transition: gap 0.15s ease;
+}
+
+.stat-details-link:hover {
+    color: var(--primary-hover);
+    gap: 0.55rem;
+}
+
+/* ==========================================================================
+   Alerts & Exceptions Section
+   ========================================================================== */
+.alert-card {
+    background: #ffffff;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--slate-200);
+    border-left-width: 4px;
+    padding: 1rem 1.25rem;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    transition: all 0.2s ease;
+}
+
+.alert-card:hover {
+    box-shadow: 0 4px 8px rgba(15, 23, 42, 0.06);
+}
+
+.alert-card.alert-card-warning {
+    border-left-color: var(--warning);
+    background: linear-gradient(to right, #fffdfa, #ffffff);
+}
+.alert-card.alert-card-info {
+    border-left-color: var(--info);
+    background: linear-gradient(to right, #f8fcff, #ffffff);
+}
+.alert-card.alert-card-primary {
+    border-left-color: var(--primary);
+    background: linear-gradient(to right, #f8faff, #ffffff);
+}
+
+.alert-card-icon {
+    font-size: 1.35rem;
+    line-height: 1;
+    margin-top: 0.1rem;
+}
+
+.alert-card-warning .alert-card-icon { color: var(--warning-text); }
+.alert-card-info .alert-card-icon    { color: var(--info-text); }
+.alert-card-primary .alert-card-icon { color: var(--primary); }
+
+.alert-card-title {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--navy-900);
+    margin-bottom: 0.15rem;
+}
+
+.alert-card-text {
+    font-size: 0.875rem;
+    color: var(--slate-600);
+    margin-bottom: 0;
+}
+
+.alert-count-pill {
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 0.2rem 0.55rem;
+    border-radius: 9999px;
+    margin: 0 0.25rem;
+}
+.alert-card-warning .alert-count-pill { background: #fef3c7; color: #92400e; }
+.alert-card-info .alert-count-pill    { background: #e0f2fe; color: #075985; }
+.alert-card-primary .alert-count-pill { background: #dbeafe; color: #1e40af; }
+
+/* ==========================================================================
+   Content Cards, Tables & Badges
+   ========================================================================== */
+.content-card {
+    background: var(--surface-card);
+    border: 1px solid var(--slate-200);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.content-card-header {
+    background: #ffffff;
+    border-bottom: 1px solid var(--slate-200);
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.custom-table {
+    margin-bottom: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+}
+
+.custom-table thead th {
+    background-color: #f8fafc;
+    color: var(--slate-600);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.85rem 1.25rem;
+    border-bottom: 1px solid var(--slate-200);
+    border-top: none;
+    white-space: nowrap;
+}
+
+.custom-table tbody td {
+    padding: 1rem 1.25rem;
+    vertical-align: middle;
+    color: var(--navy-800);
+    font-size: 0.9rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.custom-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.custom-table tbody tr {
+    transition: background-color 0.15s ease;
+}
+
+.custom-table tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+/* ==========================================================================
+   Status Badges (Pills)
+   ========================================================================== */
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    padding: 0.3rem 0.75rem;
+    border-radius: 9999px;
+    border: 1px solid transparent;
+    text-transform: uppercase;
+}
+
+.status-pill::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.status-applied {
+    background-color: #eff6ff;
+    color: #1d4ed8;
+    border-color: #bfdbfe;
+}
+.status-applied::before { background-color: #3b82f6; }
+
+.status-shortlisted {
+    background-color: #f5f3ff;
+    color: #6d28d9;
+    border-color: #ddd6fe;
+}
+.status-shortlisted::before { background-color: #8b5cf6; }
+
+.status-interview {
+    background-color: #fffbeb;
+    color: #b45309;
+    border-color: #fde68a;
+}
+.status-interview::before { background-color: #f59e0b; }
+
+.status-selected {
+    background-color: #ecfdf5;
+    color: #047857;
+    border-color: #a7f3d0;
+}
+.status-selected::before { background-color: #10b981; }
+
+.status-rejected {
+    background-color: #fef2f2;
+    color: #b91c1c;
+    border-color: #fecaca;
+}
+.status-rejected::before { background-color: #ef4444; }
+
+.status-placed-yes {
+    background-color: #ecfdf5;
+    color: #047857;
+    border: 1px solid #a7f3d0;
+    font-weight: 700;
+    padding: 0.25rem 0.65rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+}
+
+.status-placed-no {
+    background-color: #fffbeb;
+    color: #b45309;
+    border: 1px solid #fde68a;
+    font-weight: 700;
+    padding: 0.25rem 0.65rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+}
+
+.drive-status-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.25rem 0.65rem;
+    border-radius: 6px;
+    text-transform: uppercase;
+}
+.drive-status-upcoming  { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
+.drive-status-ongoing   { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+.drive-status-completed { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
+
+/* ==========================================================================
+   Buttons & Inputs
+   ========================================================================== */
+.btn {
+    font-weight: 600;
+    font-size: 0.875rem;
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: #ffffff;
+    box-shadow: 0 1px 2px rgba(37, 99, 235, 0.2);
+}
+
+.btn-primary:hover, .btn-primary:focus {
+    background-color: var(--primary-hover);
+    border-color: var(--primary-hover);
+    box-shadow: 0 3px 6px rgba(37, 99, 235, 0.3);
+}
+
+.btn-danger {
+    background-color: #dc2626;
+    border-color: #dc2626;
+}
+
+.btn-danger:hover {
+    background-color: #b91c1c;
+    border-color: #b91c1c;
+}
+
+.btn-outline-danger {
+    color: #dc2626;
+    border-color: #fca5a5;
+    background-color: #fff5f5;
+}
+
+.btn-outline-danger:hover {
+    color: #ffffff;
+    background-color: #dc2626;
+    border-color: #dc2626;
+}
+
+.form-control, .form-select {
+    font-size: 0.9rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--slate-200);
+    padding: 0.55rem 0.85rem;
+    color: var(--navy-900);
+    transition: all 0.15s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    outline: none;
+}
+
+.form-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--navy-800);
+    margin-bottom: 0.4rem;
+}
+
+/* ==========================================================================
+   Form Card Wrapper
+   ========================================================================== */
+.form-card {
+    background: #ffffff;
+    border: 1px solid var(--slate-200);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--card-shadow);
+    padding: 2rem;
+    max-width: 680px;
+    margin: 0 auto;
+}
+
+.form-card-header {
+    border-bottom: 1px solid var(--slate-100);
+    padding-bottom: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+.custom-footer {
+    background: #ffffff;
+    border-top: 1px solid var(--slate-200);
+    padding: 1.75rem 0;
+    color: var(--slate-500);
+    font-size: 0.85rem;
+    margin-top: 3rem;
+}
+
+.custom-footer .footer-badge {
+    background-color: var(--slate-100);
+    color: var(--slate-600);
+    border: 1px solid var(--slate-200);
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.25rem 0.6rem;
+    border-radius: 9999px;
+}

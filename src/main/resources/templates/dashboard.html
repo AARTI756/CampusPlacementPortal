@@ -1,60 +1,164 @@
 <div th:replace="~{header}"></div>
-<h2>Dashboard</h2>
-<div class="row mt-4">
-    <div class="col-md-3 mb-3">
-        <div class="card text-white bg-primary h-100">
+
+<div class="page-header-container">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div>
+            <h2 class="page-header-title">Dashboard</h2>
+            <p class="page-header-subtitle">Real-time overview of campus recruitment drives, student eligibility, and placement outcomes.</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <span class="badge bg-white text-secondary border px-3 py-2 shadow-sm rounded-pill">
+                <i class="bi bi-clock me-1 text-primary"></i>Live Overview
+            </span>
+        </div>
+    </div>
+</div>
+
+<!-- KPI Summary Cards -->
+<div class="row g-3">
+    <div class="col-sm-6 col-xl-3">
+        <div class="card stat-kpi-card border-accent-primary h-100">
             <div class="card-body">
-                <h5 class="card-title">Total Students</h5>
-                <h2 class="card-text" th:text="${stats.totalStudents}">0</h2>
+                <div class="d-flex align-items-start justify-content-between mb-3">
+                    <div>
+                        <div class="stat-label">Total Students</div>
+                        <h3 class="stat-value" th:text="${stats.totalStudents}">0</h3>
+                    </div>
+                    <div class="stat-icon-wrapper stat-icon-primary">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
+                </div>
             </div>
-            <div class="card-footer bg-transparent border-top-0">
-                <a href="/students" class="text-white text-decoration-none">View Details &rarr;</a>
+            <div class="card-footer bg-transparent">
+                <a href="/students" class="stat-details-link">
+                    <span>View Details</span>
+                    <i class="bi bi-arrow-right"></i>
+                </a>
             </div>
         </div>
     </div>
-    <div class="col-md-3 mb-3">
-        <div class="card text-white bg-success h-100">
+
+    <div class="col-sm-6 col-xl-3">
+        <div class="card stat-kpi-card border-accent-success h-100">
             <div class="card-body">
-                <h5 class="card-title">Total Companies</h5>
-                <h2 class="card-text" th:text="${stats.totalCompanies}">0</h2>
+                <div class="d-flex align-items-start justify-content-between mb-3">
+                    <div>
+                        <div class="stat-label">Total Companies</div>
+                        <h3 class="stat-value" th:text="${stats.totalCompanies}">0</h3>
+                    </div>
+                    <div class="stat-icon-wrapper stat-icon-success">
+                        <i class="bi bi-building-fill"></i>
+                    </div>
+                </div>
             </div>
-            <div class="card-footer bg-transparent border-top-0">
-                <a href="/companies" class="text-white text-decoration-none">View Details &rarr;</a>
+            <div class="card-footer bg-transparent">
+                <a href="/companies" class="stat-details-link">
+                    <span>View Details</span>
+                    <i class="bi bi-arrow-right"></i>
+                </a>
             </div>
         </div>
     </div>
-    <div class="col-md-3 mb-3">
-        <div class="card text-white bg-info h-100">
+
+    <div class="col-sm-6 col-xl-3">
+        <div class="card stat-kpi-card border-accent-info h-100">
             <div class="card-body">
-                <h5 class="card-title">Total Drives</h5>
-                <h2 class="card-text" th:text="${stats.totalDrives}">0</h2>
+                <div class="d-flex align-items-start justify-content-between mb-3">
+                    <div>
+                        <div class="stat-label">Total Drives</div>
+                        <h3 class="stat-value" th:text="${stats.totalDrives}">0</h3>
+                    </div>
+                    <div class="stat-icon-wrapper stat-icon-info">
+                        <i class="bi bi-calendar2-event-fill"></i>
+                    </div>
+                </div>
             </div>
-            <div class="card-footer bg-transparent border-top-0">
-                <a href="/drives" class="text-white text-decoration-none">View Details &rarr;</a>
+            <div class="card-footer bg-transparent">
+                <a href="/drives" class="stat-details-link">
+                    <span>View Details</span>
+                    <i class="bi bi-arrow-right"></i>
+                </a>
             </div>
         </div>
     </div>
-    <div class="col-md-3 mb-3">
-        <div class="card text-white bg-secondary h-100">
+
+    <div class="col-sm-6 col-xl-3">
+        <div class="card stat-kpi-card border-accent-purple h-100">
             <div class="card-body">
-                <h5 class="card-title">Students Placed</h5>
-                <h2 class="card-text" th:text="${stats.studentsPlaced}">0</h2>
+                <div class="d-flex align-items-start justify-content-between mb-3">
+                    <div>
+                        <div class="stat-label">Students Placed</div>
+                        <h3 class="stat-value" th:text="${stats.studentsPlaced}">0</h3>
+                    </div>
+                    <div class="stat-icon-wrapper stat-icon-purple">
+                        <i class="bi bi-patch-check-fill"></i>
+                    </div>
+                </div>
             </div>
-            <div class="card-footer bg-transparent border-top-0">
-                <a href="/students?placed=true" class="text-white text-decoration-none">View Details &rarr;</a>
+            <div class="card-footer bg-transparent">
+                <a href="/students?placed=true" class="stat-details-link">
+                    <span>View Details</span>
+                    <i class="bi bi-arrow-right"></i>
+                </a>
             </div>
         </div>
     </div>
 </div>
 
-<h4 class="mt-4">Alerts & Exceptions</h4>
-<div class="alert alert-warning">
-    <strong>Unplaced Students:</strong> <span th:text="${stats.unplacedStudentsCount}">0</span> students are yet to be placed.
+<!-- Alerts & Exceptions Section -->
+<div class="mt-4 pt-2">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <h4 class="mb-0 fw-bold text-dark d-flex align-items-center gap-2">
+            <i class="bi bi-bell-fill text-warning"></i>
+            <span>Alerts & Exceptions</span>
+        </h4>
+        <span class="text-muted small">Action items needing placement coordinator review</span>
+    </div>
+
+    <div class="alert alert-card alert-card-warning">
+        <div class="alert-card-icon">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+        </div>
+        <div class="flex-grow-1">
+            <div class="alert-card-title">Unplaced Students</div>
+            <p class="alert-card-text">
+                <strong><span th:text="${stats.unplacedStudentsCount}">0</span> students</strong> are yet to be placed in an active recruitment drive.
+            </p>
+        </div>
+        <div>
+            <a href="/students" class="btn btn-sm btn-outline-warning text-dark fw-semibold">View Students</a>
+        </div>
+    </div>
+
+    <div class="alert alert-card alert-card-info">
+        <div class="alert-card-icon">
+            <i class="bi bi-calendar-check-fill"></i>
+        </div>
+        <div class="flex-grow-1">
+            <div class="alert-card-title">Upcoming Drives</div>
+            <p class="alert-card-text">
+                <strong><span th:text="${stats.upcomingDrivesCount}">0</span> drives</strong> are upcoming and scheduled for student registrations.
+            </p>
+        </div>
+        <div>
+            <a href="/drives" class="btn btn-sm btn-outline-info text-dark fw-semibold">View Drives</a>
+        </div>
+    </div>
+
+    <div class="alert alert-card alert-card-primary">
+        <div class="alert-card-icon">
+            <i class="bi bi-clock-history"></i>
+        </div>
+        <div class="flex-grow-1">
+            <div class="alert-card-title">Pending Interviews</div>
+            <p class="alert-card-text">
+                <strong><span th:text="${stats.pendingInterviewsCount}">0</span> students</strong> are currently scheduled for interview rounds.
+            </p>
+        </div>
+        <div>
+            <a href="/applications" class="btn btn-sm btn-outline-primary fw-semibold">View Applications</a>
+        </div>
+    </div>
 </div>
-<div class="alert alert-info">
-    <strong>Upcoming Drives:</strong> <span th:text="${stats.upcomingDrivesCount}">0</span> drives are upcoming.
-</div>
-<div class="alert alert-primary">
-    <strong>Pending Interviews:</strong> <span th:text="${stats.pendingInterviewsCount}">0</span> students are currently scheduled for interviews.
-</div>
+
 <div th:replace="~{footer}"></div>

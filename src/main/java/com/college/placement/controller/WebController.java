@@ -63,8 +63,15 @@ public class WebController {
     }
 
     @PostMapping("/students")
-    public String saveStudent(@ModelAttribute Student student) {
-        studentRepository.save(student);
+    public String saveStudent(@ModelAttribute Student student, RedirectAttributes redirectAttributes) {
+        try {
+            studentRepository.save(student);
+            redirectAttributes.addFlashAttribute("message", "Student saved successfully.");
+        } catch (DataIntegrityViolationException e) {
+            redirectAttributes.addFlashAttribute("error", "A student with this email address already exists.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Could not save student: " + e.getMessage());
+        }
         return "redirect:/students";
     }
 
@@ -114,8 +121,15 @@ public class WebController {
     }
 
     @PostMapping("/companies")
-    public String saveCompany(@ModelAttribute Company company) {
-        companyRepository.save(company);
+    public String saveCompany(@ModelAttribute Company company, RedirectAttributes redirectAttributes) {
+        try {
+            companyRepository.save(company);
+            redirectAttributes.addFlashAttribute("message", "Company saved successfully.");
+        } catch (DataIntegrityViolationException e) {
+            redirectAttributes.addFlashAttribute("error", "A company with this name already exists.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Could not save company: " + e.getMessage());
+        }
         return "redirect:/companies";
     }
 
@@ -161,8 +175,15 @@ public class WebController {
     }
 
     @PostMapping("/drives")
-    public String saveDrive(@ModelAttribute PlacementDrive drive) {
-        driveRepository.save(drive);
+    public String saveDrive(@ModelAttribute PlacementDrive drive, RedirectAttributes redirectAttributes) {
+        try {
+            driveRepository.save(drive);
+            redirectAttributes.addFlashAttribute("message", "Placement drive saved successfully.");
+        } catch (DataIntegrityViolationException e) {
+            redirectAttributes.addFlashAttribute("error", "Could not save drive - constraint violation.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Could not save drive: " + e.getMessage());
+        }
         return "redirect:/drives";
     }
 
@@ -215,8 +236,15 @@ public class WebController {
     }
 
     @PostMapping("/applications")
-    public String saveApplication(@ModelAttribute Application application) {
-        applicationRepository.save(application);
+    public String saveApplication(@ModelAttribute Application application, RedirectAttributes redirectAttributes) {
+        try {
+            applicationRepository.save(application);
+            redirectAttributes.addFlashAttribute("message", "Application saved successfully.");
+        } catch (DataIntegrityViolationException e) {
+            redirectAttributes.addFlashAttribute("error", "This student is already applied to this drive.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Could not save application: " + e.getMessage());
+        }
         return "redirect:/applications";
     }
 
